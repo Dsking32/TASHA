@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap');
+@import "tailwindcss";
+
+/*
+  TashaXpress design tokens — v4 (warm & friendly)
+  ---------------------------------
+  Variable NAMES kept the same across every rework so all existing
+  Tailwind classes (bg-danfo, text-asphalt, etc.) pick up the new palette
+  automatically. What changed is the actual feeling: warm cream instead of
+  cool white/blue-white, a vivid coral-orange primary instead of corporate
+  blue, soft sage for success, and much rounder shapes throughout.
+
+  asphalt  #3D2E28  warm near-black text (brown undertone, not cold black)
+  paper    #FFF8F0  warm cream surface / background
+  paper-dim #FDEEE0 soft peachy section background
+  danfo    #FF6B4A  PRIMARY CORAL-ORANGE — the warm, friendly brand color
+  danfo-dark #E5502F deeper coral for hover/active states
+  signal   #3FA875  soft sage green — confirmed / success
+  alert    #E4574C  warm coral-red — cancelled / error (not a cold red)
+  slate    #8B7E76  warm muted brown-gray secondary text
+  premium  #C77DFF  soft lavender, tertiary accent (premium seats etc.)
+
+  Type: Baloo 2 for display — genuinely rounded, warm terminals, reads as
+  approachable rather than corporate. Plus Jakarta Sans for body — clean
+  and readable with a touch more warmth than a pure grotesk. JetBrains
+  Mono stays for anything data-shaped: times, references, seat numbers.
+*/
+@theme {
+  --color-asphalt: #3d2e28;
+  --color-asphalt-soft: #55423a;
+  --color-paper: #fff8f0;
+  --color-paper-dim: #fdeee0;
+  --color-danfo: #ff6b4a;
+  --color-danfo-dark: #e5502f;
+  --color-signal: #3fa875;
+  --color-signal-soft: #e3f5ec;
+  --color-alert: #e4574c;
+  --color-alert-soft: #fce6e3;
+  --color-slate: #8b7e76;
+  --color-premium: #c77dff;
+  --color-premium-soft: #f6ecff;
+
+  --font-display: 'Baloo 2', system-ui, sans-serif;
+  --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+html {
+  font-family: var(--font-body);
+}
+
+body {
+  background-color: var(--color-paper);
+  color: var(--color-asphalt);
+}
+
+/* Baloo 2 is naturally rounded and a touch wide — no extra tracking needed. */
+.font-display {
+  letter-spacing: -0.01em;
+}
+
+/* Perforated ticket-stub edge, used on TicketCard's tear line */
+.ticket-perforation {
+  background-image: radial-gradient(circle, var(--color-paper) 3px, transparent 3.5px);
+  background-size: 14px 14px;
+  background-position: center;
+  background-repeat: repeat-x;
+}
+
+.notch {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: var(--color-paper);
+  border-radius: 9999px;
+}
+
+::selection {
+  background: var(--color-danfo);
+  color: white;
+}
+
+/* Printing a ticket: browsers strip background colors, gradients, and
+   box-shadows by default unless told otherwise — that's what was making
+   the printed ticket look flat/off-brand compared to the screen version.
+   Force exact reproduction of colors specifically within the printable
+   ticket area (scoped, not global, so we don't fight the browser on
+   every print job in the app — e.g. plain text pages should still print
+   ink-efficiently). */
+@media print {
+  .print-exact-color,
+  .print-exact-color * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    color-adjust: exact;
+  }
+}
