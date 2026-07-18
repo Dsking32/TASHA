@@ -1,9 +1,12 @@
 import { useRef, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { UserPlus, X } from 'lucide-react';
 import { bookTrip } from '../api/trips';
 import Field from '../components/ui/Field';
 import Button from '../components/ui/Button';
 import PageHeader from '../components/ui/PageHeader';
+
+const MAX_PASSENGERS = 6;
 
 const emptyPassenger = (category = 'adult') => ({
   title: 'Mr',
@@ -56,6 +59,16 @@ export default function BookTrip() {
     );
   };
 
+  const addPassenger = () => {
+    setPassengers((prev) =>
+      prev.length >= MAX_PASSENGERS ? prev : [...prev, emptyPassenger()]
+    );
+  };
+
+  const removePassenger = (index) => {
+    setPassengers((prev) => (prev.length <= 1 ? prev : prev.filter((_, i) => i !== index)));
+  };
+
   const onSubmit = async (e) => {
     e.preventDefault();
     if (submittingRef.current) return;
@@ -106,7 +119,7 @@ export default function BookTrip() {
         title="Who's travelling?"
         subtitle={
           <>
-            {passengerCount} passenger{passengerCount > 1 ? 's' : ''} · schedule #{scheduleId}
+            {passengers.length} passenger{passengers.length > 1 ? 's' : ''} · schedule #{scheduleId}
           </>
         }
       />
@@ -114,8 +127,20 @@ export default function BookTrip() {
       <form onSubmit={onSubmit} className="mt-8 space-y-10">
         {passengers.map((p, i) => (
           <fieldset key={i} className="rounded-2xl border border-asphalt/10 p-5">
-            <legend className="px-2 font-display text-sm font-semibold text-asphalt">
-              Passenger {i + 1}
+            <legend className="flex w-full items-center justify-between px-2">
+              <span className="font-display text-sm font-semibold text-asphalt">
+                Passenger {i + 1}
+              </span>
+              {passengers.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => removePassenger(i)}
+                  className="inline-flex cursor-pointer items-center gap-1 rounded-full px-2 py-1 font-mono text-[11px] text-slate transition-colors hover:bg-alert-soft hover:text-alert"
+                >
+                  <X size={13} />
+                  Remove
+                </button>
+              )}
             </legend>
 
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
@@ -218,6 +243,17 @@ export default function BookTrip() {
             </div>
           </fieldset>
         ))}
+
+        {passengers.length < MAX_PASSENGERS && (
+          <button
+            type="button"
+            onClick={addPassenger}
+            className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-asphalt/20 py-4 font-display text-sm font-semibold text-slate transition-colors hover:border-danfo/40 hover:bg-danfo/5 hover:text-danfo"
+          >
+            <UserPlus size={16} />
+            Add another passenger
+          </button>
+        )}
 
         <fieldset className="rounded-2xl border border-asphalt/10 p-5">
           <legend className="px-2 font-display text-sm font-semibold text-asphalt">

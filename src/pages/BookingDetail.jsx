@@ -175,7 +175,23 @@ export default function BookingDetail() {
             <span>{schedule.arrival?.location?.name}</span>
           </div>
           <div className="mt-1 font-mono text-xs text-slate">
-            {schedule.departure?.terminal?.name} → {schedule.arrival?.terminal?.name}
+            <div>
+              {schedule.departure?.terminal?.name} → {schedule.arrival?.terminal?.name}
+            </div>
+            {(schedule.departure?.terminal?.address || schedule.departure?.terminal?.landmark) && (
+              <div className="mt-0.5 text-slate/70">
+                Board: {schedule.departure.terminal.address}
+                {schedule.departure.terminal.landmark &&
+                  ` (near ${schedule.departure.terminal.landmark})`}
+              </div>
+            )}
+            {(schedule.arrival?.terminal?.address || schedule.arrival?.terminal?.landmark) && (
+              <div className="mt-0.5 text-slate/70">
+                Arrive: {schedule.arrival.terminal.address}
+                {schedule.arrival.terminal.landmark &&
+                  ` (near ${schedule.arrival.terminal.landmark})`}
+              </div>
+            )}
           </div>
           <div className="mt-2 font-mono text-xs text-slate">
             {schedule.departure?.date} · {schedule.departure?.time?.slice(0, 5)} –{' '}

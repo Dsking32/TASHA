@@ -23,8 +23,8 @@ export default function Field({
         placeholder={placeholder}
         required={required}
         autoComplete={autoComplete}
-        className={`w-full rounded-2xl border-2 bg-white px-4 py-3 font-body text-[15px] text-asphalt placeholder:text-slate/50 focus:border-danfo focus:outline-none focus:ring-4 focus:ring-danfo/10 ${
-          error ? 'border-alert' : 'border-asphalt/10'
+        className={`w-full rounded-xl border bg-white px-4 py-3 font-body text-[15px] text-asphalt placeholder:text-slate/50 transition-colors focus:border-danfo focus:outline-none focus:ring-4 focus:ring-danfo/10 ${
+          error ? 'border-alert' : 'border-asphalt/12'
         }`}
         {...rest}
       />

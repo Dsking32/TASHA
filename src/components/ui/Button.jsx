@@ -1,19 +1,26 @@
 const variants = {
   primary:
-    'bg-danfo text-white shadow-md shadow-danfo/25 hover:bg-danfo-dark hover:shadow-lg hover:shadow-danfo/30 disabled:bg-danfo/50 disabled:shadow-none',
+    'bg-danfo text-white shadow-md shadow-danfo/20 hover:bg-danfo-dark hover:shadow-lg hover:shadow-danfo/25 hover:-translate-y-0.5 disabled:bg-danfo/50 disabled:shadow-none disabled:hover:translate-y-0',
   dark:
-    'bg-asphalt text-paper hover:bg-asphalt-soft disabled:bg-asphalt/50',
+    'bg-asphalt text-paper shadow-md shadow-asphalt/15 hover:bg-asphalt-soft hover:-translate-y-0.5 disabled:bg-asphalt/50',
   ghost:
-    'bg-transparent text-asphalt border-2 border-asphalt/15 hover:bg-asphalt/5 hover:border-asphalt/25 disabled:opacity-50',
+    'bg-transparent text-asphalt border border-asphalt/15 hover:bg-asphalt/5 hover:border-asphalt/30 disabled:opacity-50',
   'ghost-dark':
-    'bg-transparent text-paper border-2 border-paper/25 hover:bg-paper/10 hover:border-paper/50 disabled:opacity-50',
+    'bg-transparent text-paper border border-paper/30 hover:bg-paper/10 hover:border-paper/60 disabled:opacity-50',
   danger:
-    'bg-alert text-white shadow-md shadow-alert/25 hover:bg-alert/90 disabled:bg-alert/50',
+    'bg-alert text-white shadow-md shadow-alert/20 hover:bg-alert/90 disabled:bg-alert/50',
+};
+
+const sizes = {
+  sm: 'px-4 py-2 text-xs gap-1.5',
+  md: 'px-6 py-3 text-sm gap-2',
+  lg: 'px-8 py-4 text-base gap-2.5',
 };
 
 export default function Button({
   children,
   variant = 'primary',
+  size = 'md',
   className = '',
   loading = false,
   disabled = false,
@@ -24,7 +31,7 @@ export default function Button({
     <button
       type={type}
       disabled={disabled || loading}
-      className={`inline-flex cursor-pointer items-center justify-center gap-2 rounded-full px-6 py-3 font-display font-bold text-sm transition-all duration-200 active:scale-95 disabled:cursor-not-allowed disabled:active:scale-100 ${variants[variant]} ${className}`}
+      className={`inline-flex cursor-pointer items-center justify-center rounded-full font-display font-bold transition-all duration-200 active:scale-95 disabled:cursor-not-allowed disabled:active:scale-100 disabled:hover:translate-y-0 ${variants[variant]} ${sizes[size]} ${className}`}
       {...props}
     >
       {loading && (

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { sendVerificationToken } from '../api/auth';
 import Field from '../components/ui/Field';
 import Button from '../components/ui/Button';
 import PageHeader from '../components/ui/PageHeader';
@@ -31,8 +32,21 @@ export default function Register() {
     try {
       await register(form);
       // Registration already returns a token, but email still needs
-      // verifying before login is fully unlocked — send them there.
-      navigate('/verify-email', { state: { email: form.email } });
+      // verifying before login is fully unlocked. The backend doesn't
+      // reliably auto-send the code on registration, so trigger it
+      // ourselves here — this is the same /send-token call the "Resend
+      // code" button uses, just fired immediately instead of waiting for
+      // the user to notice nothing arrived and click resend themselves.
+      // Best-effort: if this call fails, still send them to the verify
+      // page — "Resend code" there is the fallback.
+      let sent = true;
+      try {
+        const res = await sendVerificationToken({ email: form.email });
+        if (res?.success === false) sent = false;
+      } catch {
+        sent = false;
+      }
+      navigate('/verify-email', { state: { email: form.email, justSent: sent } });
     } catch (err) {
       setFormError(err.message);
       setErrors(err.errors || {});

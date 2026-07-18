@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
@@ -21,6 +21,14 @@ export default function Navbar() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   // The profile API returns first_name/last_name separately — there's no
   // combined `name` field, so referencing user.name directly always
@@ -45,10 +53,14 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-20 border-b border-asphalt/10 bg-paper print:hidden">
+    <header
+      className={`sticky top-0 z-20 border-b bg-paper/95 backdrop-blur transition-shadow print:hidden ${
+        scrolled ? 'border-asphalt/10 shadow-sm shadow-asphalt/5' : 'border-transparent'
+      }`}
+    >
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <Link to="/" className="font-display text-xl font-bold tracking-tight text-danfo">
-          TashaXpress
+        <Link to="/" className="font-display text-xl font-extrabold tracking-tight text-asphalt">
+          Tasha<span className="text-danfo">Xpress</span>
         </Link>
 
         <nav className="hidden items-center gap-7 md:flex">

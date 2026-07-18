@@ -1,52 +1,70 @@
-@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap');
 @import "tailwindcss";
 
 /*
-  TashaXpress design tokens — v4 (warm & friendly)
+  TashaXpress design tokens — v5 (clean minimal, single accent)
   ---------------------------------
   Variable NAMES kept the same across every rework so all existing
   Tailwind classes (bg-danfo, text-asphalt, etc.) pick up the new palette
-  automatically. What changed is the actual feeling: warm cream instead of
-  cool white/blue-white, a vivid coral-orange primary instead of corporate
-  blue, soft sage for success, and much rounder shapes throughout.
+  automatically. What changed: one confident blue accent instead of three
+  competing colors, near-white/near-black neutrals instead of a warm
+  cream+brown scheme, and a single grotesk typeface instead of a rounded
+  display face — reads considered and quiet rather than playful.
 
-  asphalt  #3D2E28  warm near-black text (brown undertone, not cold black)
-  paper    #FFF8F0  warm cream surface / background
-  paper-dim #FDEEE0 soft peachy section background
-  danfo    #FF6B4A  PRIMARY CORAL-ORANGE — the warm, friendly brand color
-  danfo-dark #E5502F deeper coral for hover/active states
-  signal   #3FA875  soft sage green — confirmed / success
-  alert    #E4574C  warm coral-red — cancelled / error (not a cold red)
-  slate    #8B7E76  warm muted brown-gray secondary text
-  premium  #C77DFF  soft lavender, tertiary accent (premium seats etc.)
+  asphalt  #0F172A  near-black ink for text
+  paper    #FFFFFF  pure white surface / background
+  paper-dim #F5F6F8 quiet gray section background
+  danfo    #2452E8  PRIMARY ACCENT BLUE — used sparingly, on purpose
+  danfo-dark #1B3FC4 deeper blue for hover/active states
+  signal   #16A34A  confirmed / success (used only for status dots)
+  alert    #DC2626  cancelled / error
+  slate    #64748B  muted secondary text
+  premium  #2452E8  kept equal to accent — no second competing hue
 
-  Type: Baloo 2 for display — genuinely rounded, warm terminals, reads as
-  approachable rather than corporate. Plus Jakarta Sans for body — clean
-  and readable with a touch more warmth than a pure grotesk. JetBrains
+  Type: Manrope for both display and body — one confident grotesk instead
+  of a display+body pairing, so nothing fights for attention. JetBrains
   Mono stays for anything data-shaped: times, references, seat numbers.
 */
 @theme {
-  --color-asphalt: #3d2e28;
-  --color-asphalt-soft: #55423a;
-  --color-paper: #fff8f0;
-  --color-paper-dim: #fdeee0;
-  --color-danfo: #ff6b4a;
-  --color-danfo-dark: #e5502f;
-  --color-signal: #3fa875;
-  --color-signal-soft: #e3f5ec;
-  --color-alert: #e4574c;
-  --color-alert-soft: #fce6e3;
-  --color-slate: #8b7e76;
-  --color-premium: #c77dff;
-  --color-premium-soft: #f6ecff;
+  --color-asphalt: #0f172a;
+  --color-asphalt-soft: #334155;
+  --color-paper: #ffffff;
+  --color-paper-dim: #f5f6f8;
+  --color-danfo: #2452e8;
+  --color-danfo-dark: #1b3fc4;
+  --color-signal: #16a34a;
+  --color-signal-soft: #eafbf1;
+  --color-alert: #dc2626;
+  --color-alert-soft: #fdeceb;
+  --color-slate: #64748b;
+  --color-premium: #2452e8;
+  --color-premium-soft: #ebf0fe;
 
-  --font-display: 'Baloo 2', system-ui, sans-serif;
-  --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-display: 'Manrope', system-ui, sans-serif;
+  --font-body: 'Manrope', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 }
 
 html {
   font-family: var(--font-body);
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
+  }
 }
 
 body {

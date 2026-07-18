@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { verifyEmail, sendVerificationToken } from '../api/auth';
 import Field from '../components/ui/Field';
@@ -16,13 +16,29 @@ export default function VerifyEmail() {
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
 
+  useEffect(() => {
+    if (location.state?.justSent) {
+      setNotice(`We've sent a verification code to ${location.state.email}.`);
+    } else if (location.state?.justSent === false) {
+      setFormError(
+        "We couldn't send your verification code automatically — tap \"Resend code\" below to get one."
+      );
+    }
+    // Only meant to run once, off the state this page was entered with.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const onSubmit = async (e) => {
     e.preventDefault();
     setFormError('');
     setErrors({});
     setLoading(true);
     try {
-      await verifyEmail({ email, otp });
+      const res = await verifyEmail({ email, otp });
+      if (res?.success === false) {
+        setFormError(res.message || 'That code didn\u2019t work — check it and try again.');
+        return;
+      }
       navigate('/login', { state: { verified: true } });
     } catch (err) {
       setFormError(err.message);
@@ -37,7 +53,11 @@ export default function VerifyEmail() {
     setFormError('');
     setResending(true);
     try {
-      await sendVerificationToken({ email });
+      const res = await sendVerificationToken({ email });
+      if (res?.success === false) {
+        setFormError(res.message || "That didn't go through — please try again in a moment.");
+        return;
+      }
       setNotice('A new verification code is on its way — check spam if it doesn\u2019t show up soon.');
     } catch (err) {
       setFormError(err.message);

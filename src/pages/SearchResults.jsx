@@ -94,7 +94,21 @@ export default function SearchResults() {
                 <span>{s.arrival?.location?.name}</span>
               </div>
               <div className="mt-1 font-mono text-[11px] text-slate">
-                {s.departure?.terminal?.name} → {s.arrival?.terminal?.name}
+                <div>
+                  {s.departure?.terminal?.name} → {s.arrival?.terminal?.name}
+                </div>
+                {(s.departure?.terminal?.address || s.departure?.terminal?.landmark) && (
+                  <div className="mt-0.5 text-slate/70">
+                    Board: {s.departure.terminal.address}
+                    {s.departure.terminal.landmark && ` (near ${s.departure.terminal.landmark})`}
+                  </div>
+                )}
+                {(s.arrival?.terminal?.address || s.arrival?.terminal?.landmark) && (
+                  <div className="mt-0.5 text-slate/70">
+                    Arrive: {s.arrival.terminal.address}
+                    {s.arrival.terminal.landmark && ` (near ${s.arrival.terminal.landmark})`}
+                  </div>
+                )}
               </div>
 
               <div className="mt-2 flex flex-wrap gap-x-6 gap-y-1 font-mono text-xs text-slate">
