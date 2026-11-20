@@ -4,7 +4,8 @@ import { useAuth } from '../context/AuthContext';
 import { sendVerificationToken } from '../api/auth';
 import Field from '../components/ui/Field';
 import Button from '../components/ui/Button';
-import PageHeader from '../components/ui/PageHeader';
+import AuthShell from '../components/layout/AuthShell';
+import { PHOTOS } from '../constants/images';
 
 export default function Register() {
   const { register } = useAuth();
@@ -56,10 +57,9 @@ export default function Register() {
   };
 
   return (
-    <div className="mx-auto flex min-h-[70vh] max-w-md flex-col justify-center px-6 py-16">
-      <PageHeader eyebrow="Get started" title="Create your account" />
+    <AuthShell eyebrow="Get started" title="Create your account" subtitle="Save your details once and book faster next time." photo={PHOTOS.traveller}>
 
-      <form onSubmit={onSubmit} className="mt-8 space-y-5">
+      <form onSubmit={onSubmit} className="space-y-5">
         <div className="grid grid-cols-2 gap-4">
           <Field
             label="First name"
@@ -138,12 +138,12 @@ export default function Register() {
         </Button>
       </form>
 
-      <p className="mt-8 text-center font-mono text-xs text-slate">
+      <p className="mt-8 text-center text-sm text-slate">
         Already have an account?{' '}
-        <Link to="/login" className="text-asphalt underline">
+        <Link to="/login" className="font-bold text-rose hover:text-rose-dark">
           Log in
         </Link>
       </p>
-    </div>
+    </AuthShell>
   );
 }

@@ -23,12 +23,12 @@ export default function TicketCard({
   status = 'confirmed',
 }) {
   return (
-    <div className="print-exact-color flex w-full max-w-2xl flex-col overflow-hidden rounded-[28px] border-2 border-asphalt/8 bg-white shadow-sm transition-shadow hover:shadow-md md:flex-row print:flex-row print:break-inside-avoid print:shadow-none">
+    <div className="print-exact-color flex w-full max-w-2xl flex-col overflow-hidden rounded-3xl bg-white ring-1 ring-asphalt/8 shadow-[0_18px_40px_-28px_rgba(10,31,60,0.4)] md:flex-row print:flex-row print:break-inside-avoid print:shadow-none">
       {/* Left: travel info */}
       <div className="flex flex-1 flex-col gap-6 p-6 sm:p-8">
         <div className="flex items-center justify-between">
           <span className="font-body text-[11px] font-semibold uppercase tracking-widest text-slate">
-            TashaXpress
+            TASHA
           </span>
           <div className="text-right">
             <span className="block font-body text-[11px] font-semibold uppercase tracking-widest text-slate">

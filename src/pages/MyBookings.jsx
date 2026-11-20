@@ -130,8 +130,8 @@ export default function MyBookings() {
 
       {/* Stat summary */}
       <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="flex items-center gap-4 rounded-[28px] border border-asphalt/10 bg-white p-5">
-          <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-danfo/10 text-danfo">
+        <div className="flex items-center gap-4 rounded-3xl bg-white p-5 ring-1 ring-asphalt/8">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-sky-soft text-danfo">
             <Bus size={20} />
           </div>
           <div>
@@ -139,8 +139,8 @@ export default function MyBookings() {
             <div className="font-body text-xs text-slate">Total bookings</div>
           </div>
         </div>
-        <div className="flex items-center gap-4 rounded-[28px] border border-asphalt/10 bg-white p-5">
-          <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-signal/10 text-signal">
+        <div className="flex items-center gap-4 rounded-3xl bg-white p-5 ring-1 ring-asphalt/8">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-signal-soft text-signal">
             <Ticket size={20} />
           </div>
           <div>
@@ -150,8 +150,8 @@ export default function MyBookings() {
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-4 rounded-[28px] border border-asphalt/10 bg-white p-5">
-          <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-premium/10 text-premium">
+        <div className="flex items-center gap-4 rounded-3xl bg-white p-5 ring-1 ring-asphalt/8">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-rose-soft text-rose">
             <Wallet size={20} />
           </div>
           <div>
@@ -176,11 +176,11 @@ export default function MyBookings() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search by route or reference"
-            className="w-full rounded-lg border border-asphalt/15 bg-white py-2.5 pl-9 pr-3 text-sm focus:border-danfo focus:outline-none focus:ring-2 focus:ring-danfo/10"
+            className="w-full rounded-full border border-transparent bg-paper-dim py-2.5 pl-9 pr-4 text-sm font-medium text-asphalt focus:border-danfo focus:bg-white focus:outline-none focus:ring-4 focus:ring-sky/20"
           />
         </div>
 
-        <div className="flex flex-wrap items-center gap-1 rounded-lg border border-asphalt/10 bg-white p-1">
+        <div className="flex flex-wrap items-center gap-1 rounded-full bg-paper-dim p-1">
           {STATUS_TABS.map((f) => (
             <button
               key={f.value}
@@ -217,19 +217,19 @@ export default function MyBookings() {
       {loading && (
         <div className="mt-10 space-y-3">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-24 animate-pulse rounded-[28px] bg-asphalt/5" />
+            <div key={i} className="skeleton h-24 rounded-3xl" />
           ))}
         </div>
       )}
 
       {!loading && error && (
-        <div className="mt-10 rounded-[28px] border border-alert/20 bg-alert-soft p-5 font-body text-sm text-alert">
+        <div className="mt-10 rounded-3xl border border-alert/20 bg-alert-soft p-5 font-body text-sm text-alert">
           {error}
         </div>
       )}
 
       {!loading && !error && visibleBookings.length === 0 && (
-        <div className="mt-10 flex flex-col items-center rounded-[28px] border border-dashed border-asphalt/20 bg-white p-10 text-center">
+        <div className="mt-10 flex flex-col items-center rounded-3xl border border-dashed border-asphalt/20 bg-white p-10 text-center">
           <div className="flex h-12 w-12 items-center justify-center rounded-full bg-paper-dim text-slate">
             <Bus size={20} />
           </div>
@@ -267,7 +267,7 @@ export default function MyBookings() {
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') navigate(`/bookings/${b.id}`);
               }}
-              className="group flex cursor-pointer items-center gap-4 rounded-[28px] border border-asphalt/10 bg-white p-5 transition-all hover:border-danfo/30 hover:shadow-md"
+              className="group flex cursor-pointer items-center gap-4 rounded-3xl bg-white p-5 ring-1 ring-asphalt/8 transition-[box-shadow] duration-300 hover:ring-danfo/30 hover:shadow-[0_18px_40px_-24px_rgba(10,31,60,0.4)]"
             >
               <div className="hidden h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-paper-dim text-slate sm:flex">
                 <Bus size={18} />
@@ -293,7 +293,7 @@ export default function MyBookings() {
                   <Link
                     to={quickAction.to}
                     onClick={(e) => e.stopPropagation()}
-                    className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-danfo/10 px-3 py-1 font-body text-xs font-semibold text-danfo transition-colors hover:bg-danfo/20"
+                    className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-rose-soft px-3 py-1 font-body text-xs font-semibold text-rose transition-colors hover:bg-rose hover:text-white"
                   >
                     <quickAction.icon size={13} />
                     {quickAction.label}

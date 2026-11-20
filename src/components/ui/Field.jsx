@@ -12,9 +12,7 @@ export default function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block font-body text-[13px] font-semibold text-slate">
-        {label}
-      </span>
+      {label && <span className="mb-1.5 block text-[13px] font-bold text-asphalt">{label}</span>}
       <input
         name={name}
         type={type}
@@ -23,12 +21,12 @@ export default function Field({
         placeholder={placeholder}
         required={required}
         autoComplete={autoComplete}
-        className={`w-full rounded-xl border bg-white px-4 py-3 font-body text-[15px] text-asphalt placeholder:text-slate/50 transition-colors focus:border-danfo focus:outline-none focus:ring-4 focus:ring-danfo/10 ${
-          error ? 'border-alert' : 'border-asphalt/12'
+        className={`w-full rounded-xl border bg-paper-dim px-4 py-3.5 font-body text-[15px] font-medium text-asphalt placeholder:text-slate/60 transition-[border-color,background-color,box-shadow] duration-200 ease-(--ease-in-out) focus:border-danfo focus:bg-white focus:outline-none focus:ring-4 focus:ring-sky/20 ${
+          error ? 'border-alert bg-alert-soft/40' : 'border-transparent'
         }`}
         {...rest}
       />
-      {error && <span className="mt-1 block text-xs text-alert">{error}</span>}
+      {error && <span className="mt-1.5 block text-xs font-semibold text-alert">{error}</span>}
     </label>
   );
 }

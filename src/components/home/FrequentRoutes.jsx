@@ -1,21 +1,26 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, Clock } from 'lucide-react';
-import { getLocations } from '../../api/trips';
+import { fetchAllTrips, getLocations } from '../../api/trips';
 import { img, PHOTOS } from '../../constants/images';
 import { formatDuration, localDate } from '../../utils/places';
 import Reveal from '../ui/Reveal';
 import Scribble from '../ui/Scribble';
 
-// Matches the routes the backend runs (database/seeders/RouteSeeder.php).
+// Routes that have fares in the backend (database/seeders/FareSeeder.php).
 // IDs are resolved from /trips/locations at runtime, by city name.
+// `fare` is the seeded adult fare, shown until live schedules load; the
+// live lowest adult fare from /trips replaces it when available.
 const ROUTES = [
-  { from: 'Kano', to: 'Abuja', mins: 420, photo: PHOTOS.abujaMosque },
-  { from: 'Abuja', to: 'Lagos', mins: 780, photo: PHOTOS.lagosBridge },
-  { from: 'Kaduna', to: 'Abuja', mins: 210, photo: PHOTOS.abujaFlags },
-  { from: 'Katsina', to: 'Kano', mins: 120, photo: PHOTOS.durbar },
-  { from: 'Maiduguri', to: 'Bauchi', mins: 360, photo: PHOTOS.northernAttire },
+  { from: 'Kano', to: 'Abuja', mins: 420, fare: 6500, photo: PHOTOS.abujaMosque },
+  { from: 'Abuja', to: 'Lagos', mins: 780, fare: 9500, photo: PHOTOS.lagosBridge },
+  { from: 'Kaduna', to: 'Abuja', mins: 210, fare: 3500, photo: PHOTOS.abujaFlags },
+  { from: 'Kano', to: 'Lagos', mins: 960, fare: 14500, photo: PHOTOS.lagosSkyline },
+  { from: 'Lagos', to: 'Abuja', mins: 780, fare: 9500, photo: PHOTOS.abujaInterchange },
 ];
+
+const naira = (v) => `₦${Number(v).toLocaleString('en-NG', { maximumFractionDigits: 0 })}`;
+const routeKey = (from, to) => `${from}→${to}`;
 
 function routeHref(route, byName) {
   const from = byName[route.from];
@@ -30,7 +35,7 @@ function routeHref(route, byName) {
   })}`;
 }
 
-function RouteCard({ route, href, large }) {
+function RouteCard({ route, href, large, fare }) {
   const body = (
     <>
       <img
@@ -43,6 +48,10 @@ function RouteCard({ route, href, large }) {
 
       <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-asphalt backdrop-blur">
         <Clock size="1em" aria-hidden="true" /> About {formatDuration(route.mins)}
+      </span>
+      <span className="absolute right-4 top-4 rounded-full bg-asphalt/80 px-3 py-1 text-sm font-bold text-white backdrop-blur">
+        <span className="text-xs font-semibold text-white/75">From </span>
+        <span className="tabular-nums">{naira(fare)}</span>
       </span>
 
       <div className="absolute inset-x-0 bottom-0 p-5">
@@ -77,6 +86,7 @@ function RouteCard({ route, href, large }) {
 
 export default function FrequentRoutes() {
   const [byName, setByName] = useState({});
+  const [liveFares, setLiveFares] = useState({});
 
   useEffect(() => {
     getLocations()
@@ -89,6 +99,19 @@ export default function FrequentRoutes() {
       })
       // Without IDs the cards fall back to scrolling up to the search form.
       .catch(() => setByName({}));
+
+    // Lowest adult fare per route across upcoming schedules.
+    fetchAllTrips({ per_page: 100, booking_type: 'individual' })
+      .then((res) => {
+        const min = {};
+        (res.data?.schedules || []).forEach((s) => {
+          const key = routeKey(s.departure?.location?.name, s.arrival?.location?.name);
+          const fare = Number(s.fare?.adult);
+          if (fare > 0 && (!min[key] || fare < min[key])) min[key] = fare;
+        });
+        setLiveFares(min);
+      })
+      .catch(() => setLiveFares({}));
   }, []);
 
   return (
@@ -102,7 +125,7 @@ export default function FrequentRoutes() {
             </h2>
           </div>
           <p className="max-w-xs text-[15px] leading-relaxed text-slate">
-            Tap a route to see today's buses, times and seats left.
+            Prices are per adult seat. Tap a route to see today's buses and seats left.
           </p>
         </Reveal>
 
@@ -113,7 +136,12 @@ export default function FrequentRoutes() {
               delay={i * 70}
               className={i === 0 ? 'sm:col-span-2 lg:col-span-1 lg:row-span-2' : 'lg:[&>a]:min-h-[242px]'}
             >
-              <RouteCard route={route} href={routeHref(route, byName)} large={i === 0} />
+              <RouteCard
+                route={route}
+                href={routeHref(route, byName)}
+                large={i === 0}
+                fare={liveFares[routeKey(route.from, route.to)] ?? route.fare}
+              />
             </Reveal>
           ))}
         </div>

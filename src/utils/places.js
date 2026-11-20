@@ -18,3 +18,6 @@ export function formatDuration(mins) {
   const m = mins % 60;
   return `${h}h${m ? ` ${m}m` : ''}`;
 }
+
+// Seeded landmarks already read "Near Kano Zoo"; avoid "near Near ...".
+export const nearText = (l) => (/^near\s/i.test(l) ? l.charAt(0).toLowerCase() + l.slice(1) : `near ${l}`);

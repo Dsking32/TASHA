@@ -163,7 +163,7 @@ export default function RescheduleBooking() {
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               placeholder="e.g. Change of travel plans"
-              className="w-full rounded-lg border border-asphalt/15 bg-paper px-4 py-3 text-[15px] focus:outline-none focus:ring-2 focus:ring-danfo/60"
+              className="w-full rounded-xl border border-transparent bg-paper-dim px-4 py-3.5 text-[15px] font-medium text-asphalt transition-[border-color,background-color,box-shadow] duration-200 focus:border-danfo focus:bg-white focus:outline-none focus:ring-4 focus:ring-sky/20"
             />
           </label>
 

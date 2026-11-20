@@ -6,6 +6,7 @@ import { buildShareUrl, extractShareToken } from '../utils/shareUrl';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 import { bookingStatusStyle, bookingStatusLabel } from '../constants/bookingStatus';
+import { nearText } from '../utils/places';
 
 function money(n) {
   const num = Number(n);
@@ -182,14 +183,14 @@ export default function BookingDetail() {
               <div className="mt-0.5 text-slate/70">
                 Board: {schedule.departure.terminal.address}
                 {schedule.departure.terminal.landmark &&
-                  ` (near ${schedule.departure.terminal.landmark})`}
+                  ` (${nearText(schedule.departure.terminal.landmark)})`}
               </div>
             )}
             {(schedule.arrival?.terminal?.address || schedule.arrival?.terminal?.landmark) && (
               <div className="mt-0.5 text-slate/70">
                 Arrive: {schedule.arrival.terminal.address}
                 {schedule.arrival.terminal.landmark &&
-                  ` (near ${schedule.arrival.terminal.landmark})`}
+                  ` (${nearText(schedule.arrival.terminal.landmark)})`}
               </div>
             )}
           </div>
@@ -304,7 +305,7 @@ export default function BookingDetail() {
         <>
           {payNotice && <p className="mt-6 font-mono text-sm text-slate">{payNotice}</p>}
           {payError && <p className="mt-6 font-mono text-sm text-alert">{payError}</p>}
-          <p className="mt-6 rounded-[28px] bg-alert-soft p-4 text-center font-mono text-sm text-alert">
+          <p className="mt-6 rounded-3xl bg-alert-soft p-4 text-center font-mono text-sm text-alert">
             That payment didn't go through — no ticket has been issued yet.
           </p>
           <Button loading={payLoading} onClick={onPay} className="mt-4 w-full">
@@ -314,13 +315,13 @@ export default function BookingDetail() {
       )}
 
       {booking.status === 'cancelled' && (
-        <p className="mt-6 rounded-[28px] bg-asphalt/5 p-4 text-center font-mono text-sm text-slate">
+        <p className="mt-6 rounded-3xl bg-asphalt/5 p-4 text-center font-mono text-sm text-slate">
           This booking was cancelled — no ticket was issued.
         </p>
       )}
 
       {booking.status === 'confirmed' && (
-        <p className="mt-6 rounded-[28px] bg-signal-soft p-4 text-center font-mono text-sm text-signal">
+        <p className="mt-6 rounded-3xl bg-signal-soft p-4 text-center font-mono text-sm text-signal">
           Payment confirmed — this booking is complete.
         </p>
       )}

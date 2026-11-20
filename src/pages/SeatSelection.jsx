@@ -17,7 +17,7 @@ const BENCH_SIZE = 3;
 // keep meaning available vs booked vs premium vs selected.
 const SEAT_COLORS = {
   available: { fill: 'fill-paper-dim', stroke: 'stroke-asphalt/25', text: 'fill-asphalt' },
-  selected: { fill: 'fill-danfo', stroke: 'stroke-danfo-dark', text: 'fill-white' },
+  selected: { fill: 'fill-rose', stroke: 'stroke-rose-dark', text: 'fill-white' },
   booked: { fill: 'fill-asphalt', stroke: 'stroke-asphalt', text: 'fill-white' },
   held: { fill: 'fill-asphalt/50', stroke: 'stroke-asphalt/60', text: 'fill-white' },
   unavailable: { fill: 'fill-asphalt/10', stroke: 'stroke-asphalt/15', text: 'fill-slate/50' },
@@ -194,7 +194,7 @@ export default function SeatSelection() {
           <span className="font-body text-[11px] text-slate">Available</span>
         </div>
         <div className="flex flex-col items-center gap-1.5">
-          <div className="h-8 w-8 rounded-lg bg-danfo shadow-sm" />
+          <div className="h-8 w-8 rounded-lg bg-rose shadow-sm" />
           <span className="font-body text-[11px] text-slate">Selected</span>
         </div>
         <div className="flex flex-col items-center gap-1.5">
@@ -208,7 +208,7 @@ export default function SeatSelection() {
       </div>
 
       {/* Bus body — metal-toned chassis, mirrors, steering wheel, illustrated seats */}
-      <div className="mt-8 overflow-hidden rounded-t-[64px] rounded-b-[28px] border-2 border-asphalt/20 bg-gradient-to-b from-asphalt/5 to-white shadow-[0_24px_48px_-28px_rgba(61,46,40,0.35)]">
+      <div className="mt-8 overflow-hidden rounded-t-[64px] rounded-b-3xl border-2 border-asphalt/20 bg-gradient-to-b from-asphalt/5 to-white shadow-[0_24px_48px_-28px_rgba(10,31,60,0.35)]">
         {/* Front console: mirrors, steering wheel (driver + door both left, matching Nigerian commuter bus layout), front passenger seat */}
         <div className="relative border-b-2 border-dashed border-asphalt/15 bg-asphalt/[0.04] px-7 pb-5 pt-9">
           {/* Wing mirrors */}

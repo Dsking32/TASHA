@@ -68,7 +68,7 @@ export default function Profile() {
             )}
           </div>
           <label className="cursor-pointer">
-            <span className="inline-block rounded-lg border border-asphalt/15 px-4 py-2 font-body text-sm font-medium text-asphalt hover:border-danfo/40">
+            <span className="inline-block rounded-full border border-asphalt/15 px-5 py-2.5 font-body text-sm font-semibold text-asphalt hover:border-rose hover:text-rose">
               Change photo
             </span>
             <input type="file" accept="image/*" onChange={onPhotoChange} className="hidden" />
@@ -109,7 +109,7 @@ export default function Profile() {
             name="gender"
             value={form.gender}
             onChange={onChange}
-            className="w-full rounded-lg border border-asphalt/15 bg-paper px-4 py-3 text-[15px] focus:outline-none focus:ring-2 focus:ring-danfo/60"
+            className="w-full rounded-xl border border-transparent bg-paper-dim px-4 py-3.5 text-[15px] font-medium text-asphalt transition-[border-color,background-color,box-shadow] duration-200 focus:border-danfo focus:bg-white focus:outline-none focus:ring-4 focus:ring-sky/20"
           >
             <option value="">Prefer not to say</option>
             <option value="male">Male</option>

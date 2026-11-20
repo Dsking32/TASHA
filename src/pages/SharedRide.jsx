@@ -55,7 +55,7 @@ export default function SharedRide() {
         {route.estimated_duration && ` · ${route.estimated_duration}`}
       </p>
 
-      <div className="mt-6 space-y-4 rounded-2xl border border-asphalt/10 p-5">
+      <div className="mt-6 space-y-4 rounded-3xl bg-white p-5 ring-1 ring-asphalt/8">
         <div className="font-mono text-xs text-slate">
           <div className="uppercase tracking-wider text-slate/60">Boarding</div>
           <div className="text-asphalt">{route.boarding_terminal}</div>
@@ -68,7 +68,7 @@ export default function SharedRide() {
         </div>
       </div>
 
-      <div className="mt-4 rounded-2xl border border-asphalt/10 p-5">
+      <div className="mt-4 rounded-3xl bg-white p-5 ring-1 ring-asphalt/8">
         <h2 className="font-display text-sm font-semibold text-asphalt">Driver & vehicle</h2>
         <div className="mt-3 flex items-center gap-3">
           {driver?.profile_photo ? (
@@ -93,7 +93,7 @@ export default function SharedRide() {
       </div>
 
       {passengers?.manifest?.length > 0 && (
-        <div className="mt-4 rounded-2xl border border-asphalt/10 p-5">
+        <div className="mt-4 rounded-3xl bg-white p-5 ring-1 ring-asphalt/8">
           <h2 className="font-display text-sm font-semibold text-asphalt">
             Travelling ({passengers.count})
           </h2>
