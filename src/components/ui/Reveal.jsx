@@ -36,8 +36,8 @@ export default function Reveal({ children, delay = 0, className = '', as: Tag = 
     <Tag
       ref={ref}
       style={{ transitionDelay: visible ? `${delay}ms` : '0ms' }}
-      className={`transition-all duration-700 ease-out ${
-        visible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
+      className={`transition-[opacity,transform] duration-700 ease-(--ease-out) ${
+        visible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
       } ${className}`}
     >
       {children}

@@ -1,48 +1,49 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Manrope:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
 /*
-  TashaXpress design tokens — v5 (clean minimal, single accent)
+  TASHA design tokens — v7 (bright brand)
   ---------------------------------
-  Variable NAMES kept the same across every rework so all existing
-  Tailwind classes (bg-danfo, text-asphalt, etc.) pick up the new palette
-  automatically. What changed: one confident blue accent instead of three
-  competing colors, near-white/near-black neutrals instead of a warm
-  cream+brown scheme, and a single grotesk typeface instead of a rounded
-  display face — reads considered and quiet rather than playful.
+  Token NAMES are unchanged so existing classes (bg-danfo, text-asphalt…)
+  pick up the palette automatically.
 
-  asphalt  #0F172A  near-black ink for text
-  paper    #FFFFFF  pure white surface / background
-  paper-dim #F5F6F8 quiet gray section background
-  danfo    #2452E8  PRIMARY ACCENT BLUE — used sparingly, on purpose
-  danfo-dark #1B3FC4 deeper blue for hover/active states
-  signal   #16A34A  confirmed / success (used only for status dots)
-  alert    #DC2626  cancelled / error
-  slate    #64748B  muted secondary text
-  premium  #2452E8  kept equal to accent — no second competing hue
+  asphalt   #0A1F3C  deep navy — text, dark sections
+  danfo     #0A6EF0  bright blue — links, icons, blue buttons (AA on white)
+  sky       #1E90FF  vivid blue — large fills, highlights on dark
+  rose      #E91E78  hot pink — primary CTA, scribbles, badges, active states
 
-  Type: Manrope for both display and body — one confident grotesk instead
-  of a display+body pairing, so nothing fights for attention. JetBrains
-  Mono stays for anything data-shaped: times, references, seat numbers.
+  Type: Bricolage Grotesque for display (characterful, reads well big),
+  Manrope for body. No monospace font anywhere: the `font-mono` utility is
+  mapped to Manrope with tabular figures, so times/prices/references still
+  line up without a code-style typeface.
+  Radii: 12px (rounded-xl, inputs), 24px (rounded-3xl, cards/panels), full.
 */
 @theme {
-  --color-asphalt: #0f172a;
-  --color-asphalt-soft: #334155;
+  --color-asphalt: #0a1f3c;
+  --color-asphalt-soft: #16325a;
   --color-paper: #ffffff;
-  --color-paper-dim: #f5f6f8;
-  --color-danfo: #2452e8;
-  --color-danfo-dark: #1b3fc4;
+  --color-paper-dim: #f3f7fc;
+  --color-danfo: #0a6ef0;
+  --color-danfo-dark: #0758c4;
+  --color-sky: #1e90ff;
+  --color-sky-soft: #e8f3ff;
+  --color-rose: #e91e78;
+  --color-rose-dark: #cc1466;
+  --color-rose-soft: #ffe6f1;
   --color-signal: #16a34a;
   --color-signal-soft: #eafbf1;
   --color-alert: #dc2626;
   --color-alert-soft: #fdeceb;
-  --color-slate: #64748b;
-  --color-premium: #2452e8;
-  --color-premium-soft: #ebf0fe;
+  --color-slate: #586a82;
+  --color-premium: #0a6ef0;
+  --color-premium-soft: #e8f3ff;
 
-  --font-display: 'Manrope', system-ui, sans-serif;
+  --font-display: 'Bricolage Grotesque', 'Manrope', system-ui, sans-serif;
   --font-body: 'Manrope', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-mono: 'Manrope', system-ui, sans-serif;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 }
 
 html {
@@ -60,10 +61,59 @@ html {
   }
 }
 
+/* Hero photo drifts slowly — gives the still image a sense of travel */
+@keyframes ken-burns {
+  from { transform: scale(1.12) translate3d(-1.5%, 0, 0); }
+  to { transform: scale(1.02) translate3d(1.5%, -1%, 0); }
+}
+
+/* Pink scribble draws itself in once (pathLength=1 on the path) */
+@keyframes draw {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+
+/* City strip scrolls continuously; content is duplicated so -50% loops */
+@keyframes marquee {
+  to { transform: translateX(-50%); }
+}
+
+/* Gentle bob for floating badges on photos */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+/* Route lines: dashes move in the direction of travel */
+@keyframes route-travel {
+  to { stroke-dashoffset: -24; }
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--color-paper-dim) 25%, #e8eef4 50%, var(--color-paper-dim) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s var(--ease-in-out) infinite;
+}
+
+/* Liquid glass refraction: desktop + mouse only (see LiquidGlass.jsx) */
+@media (min-width: 1024px) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .lg-refract {
+    filter: var(--lg-filter);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;
     animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 
@@ -72,9 +122,13 @@ body {
   color: var(--color-asphalt);
 }
 
-/* Baloo 2 is naturally rounded and a touch wide — no extra tracking needed. */
+.font-mono {
+  font-variant-numeric: tabular-nums;
+}
+
 .font-display {
-  letter-spacing: -0.01em;
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
 }
 
 /* Perforated ticket-stub edge, used on TicketCard's tear line */
@@ -94,7 +148,7 @@ body {
 }
 
 ::selection {
-  background: var(--color-danfo);
+  background: var(--color-rose);
   color: white;
 }
 

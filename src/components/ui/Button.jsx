@@ -1,14 +1,15 @@
 const variants = {
+  // Pink is the single highlight colour — reserved for the main action on a screen.
   primary:
-    'bg-danfo text-white shadow-md shadow-danfo/20 hover:bg-danfo-dark hover:shadow-lg hover:shadow-danfo/25 hover:-translate-y-0.5 disabled:bg-danfo/50 disabled:shadow-none disabled:hover:translate-y-0',
+    'bg-rose text-white hover:bg-rose-dark hover:-translate-y-px disabled:bg-rose/50',
   dark:
-    'bg-asphalt text-paper shadow-md shadow-asphalt/15 hover:bg-asphalt-soft hover:-translate-y-0.5 disabled:bg-asphalt/50',
+    'bg-asphalt text-paper hover:bg-asphalt-soft hover:-translate-y-px disabled:bg-asphalt/50',
   ghost:
     'bg-transparent text-asphalt border border-asphalt/15 hover:bg-asphalt/5 hover:border-asphalt/30 disabled:opacity-50',
   'ghost-dark':
     'bg-transparent text-paper border border-paper/30 hover:bg-paper/10 hover:border-paper/60 disabled:opacity-50',
   danger:
-    'bg-alert text-white shadow-md shadow-alert/20 hover:bg-alert/90 disabled:bg-alert/50',
+    'bg-alert text-white hover:bg-alert/90 disabled:bg-alert/50',
 };
 
 const sizes = {
@@ -31,7 +32,7 @@ export default function Button({
     <button
       type={type}
       disabled={disabled || loading}
-      className={`inline-flex cursor-pointer items-center justify-center rounded-full font-display font-bold transition-all duration-200 active:scale-95 disabled:cursor-not-allowed disabled:active:scale-100 disabled:hover:translate-y-0 ${variants[variant]} ${sizes[size]} ${className}`}
+      className={`inline-flex cursor-pointer items-center justify-center rounded-full font-display font-bold transition-[background-color,border-color,transform] duration-200 ease-(--ease-out) active:scale-[0.98] disabled:cursor-not-allowed disabled:active:scale-100 disabled:hover:translate-y-0 ${variants[variant]} ${sizes[size]} ${className}`}
       {...props}
     >
       {loading && (
