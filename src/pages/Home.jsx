@@ -1,309 +1,290 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
+  ArrowRight,
   Armchair,
-  ArrowLeftRight,
-  Calendar,
-  MapPin,
+  Bus,
+  CalendarClock,
+  CreditCard,
+  MapPinned,
+  Search,
+  Share2,
   ShieldCheck,
+  Smartphone,
   Ticket,
-  Users,
 } from 'lucide-react';
-import { getLocations } from '../api/trips';
-import Button from '../components/ui/Button';
-import TicketCard from '../components/ui/TicketCard';
+import SearchPanel from '../components/home/SearchPanel';
+import FrequentRoutes from '../components/home/FrequentRoutes';
+import UpcomingDepartures from '../components/home/UpcomingDepartures';
+import LiquidGlass from '../components/ui/LiquidGlass';
 import Reveal from '../components/ui/Reveal';
+import Scribble from '../components/ui/Scribble';
+import { img, PHOTOS } from '../constants/images';
 
-// Hero background image
-const HERO_IMAGE =
-  'https://res.cloudinary.com/dvpfdgnkw/image/upload/v1784401447/Gemini_Generated_Image_42lprl42lprl42lp_cbr4eb.png';
+// Mirrors the cities the backend serves (database/seeders/LocationSeeder.php).
+const CITIES = ['Kano', 'Kaduna', 'Katsina', 'Maiduguri, Borno', 'Yola', 'Bauchi', 'Sokoto', 'Abuja', 'Lagos'];
+
+const STEPS = [
+  { Icon: Search, title: 'Pick your route', copy: 'Choose where you are leaving from, where you are going, and the day.' },
+  { Icon: CreditCard, title: 'Pay online', copy: 'Add each passenger’s name and phone number, then pay securely through Paystack.' },
+  { Icon: Armchair, title: 'Choose your seat', copy: 'Pick your seat on the bus layout. Your ticket is ready straight away.' },
+];
+
+const AFTER = [
+  { Icon: MapPinned, title: 'Check in from your phone', copy: 'Opens 3 hours before departure.' },
+  { Icon: CalendarClock, title: 'Change your date', copy: 'Move to another bus on the same route.' },
+  { Icon: Share2, title: 'Share your trip', copy: 'Send family your bus and departure time.' },
+];
+
+function CityMarquee() {
+  const row = (hidden) => (
+    <ul className="flex shrink-0 items-center gap-8 pr-8" aria-hidden={hidden || undefined}>
+      {CITIES.map((c) => (
+        <li key={c} className="flex items-center gap-8 whitespace-nowrap font-display text-2xl font-bold text-white sm:text-3xl">
+          {c}
+          <Bus size={22} className="text-white/60" aria-hidden="true" />
+        </li>
+      ))}
+    </ul>
+  );
+  return (
+    <div className="relative overflow-hidden bg-rose py-5" aria-label={`Cities we serve: ${CITIES.join(', ')}`}>
+      <div className="flex w-max [animation:marquee_40s_linear_infinite] hover:[animation-play-state:paused]">
+        {row(false)}
+        {row(true)}
+      </div>
+    </div>
+  );
+}
 
 export default function Home() {
-  const navigate = useNavigate();
-  const [locations, setLocations] = useState([]);
-  const [loadError, setLoadError] = useState('');
-  const [formError, setFormError] = useState('');
-  const [form, setForm] = useState({
-    departure_location_id: '',
-    arrival_location_id: '',
-    departure_date: '',
-    booking_type: 'individual',
-    passenger_count: 1,
-  });
-
-  useEffect(() => {
-    getLocations()
-      .then((res) => setLocations(res.data?.locations || []))
-      .catch(() => setLoadError('Could not reach the backend to load locations.'));
-  }, []);
-
-  const swapLocations = () => {
-    setForm((f) => ({
-      ...f,
-      departure_location_id: f.arrival_location_id,
-      arrival_location_id: f.departure_location_id,
-    }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (form.departure_location_id === form.arrival_location_id) {
-      setFormError("Departure and arrival can't be the same city.");
-      return;
-    }
-    setFormError('');
-    const params = new URLSearchParams(form).toString();
-    navigate(`/search?${params}`);
-  };
-
   return (
-    <div>
-      {/* Hero — full-bleed photo, dark gradient, minimal type */}
-      <section
-        className="relative flex min-h-[600px] items-center justify-center bg-asphalt bg-cover bg-center px-6 pb-32 pt-28 text-center sm:min-h-[660px]"
-        style={{ backgroundImage: `linear-gradient(180deg, rgba(15,23,42,0.45) 0%, rgba(15,23,42,0.6) 55%, rgba(15,23,42,0.88) 100%), url(${HERO_IMAGE})` }}
-      >
-        <div className="relative z-10 mx-auto max-w-2xl animate-[fade-up_0.6s_ease-out]">
-          <span className="inline-block rounded-full border border-white/20 px-4 py-1.5 font-body text-[11px] font-semibold uppercase tracking-wider text-white/80">
-            Nigeria's intercity network
-          </span>
-          <h1 className="mt-6 font-display text-4xl font-extrabold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-6xl">
-            Travel across Nigeria with confidence.
-          </h1>
-          <p className="mx-auto mt-5 max-w-lg font-body text-base leading-relaxed text-white/75">
-            Search a route, pick your schedule, and hold your seat across
-            Nigeria's terminals — simple, secure, and precise.
-          </p>
+    <div className="overflow-x-clip">
+      {/* ── Hero ─────────────────────────────────────────────── */}
+      <section className="relative isolate overflow-hidden bg-asphalt">
+        <img
+          src={img(PHOTOS.hero, 2000)}
+          alt="A loaded passenger bus on a highway in northern Nigeria at dawn"
+          fetchPriority="high"
+          className="absolute inset-0 -z-20 h-full w-full object-cover [animation:ken-burns_24s_var(--ease-in-out)_infinite_alternate]"
+        />
+        {/* Left-weighted shade so the headline reads; the road and sky stay visible on the right */}
+        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-asphalt/90 via-asphalt/55 to-asphalt/10" aria-hidden="true" />
+        <div className="absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-t from-asphalt/70 to-transparent" aria-hidden="true" />
 
-          <div className="mt-9 flex justify-center">
-            <Button
-              size="lg"
-              onClick={() =>
-                document.querySelector('form')?.scrollIntoView({ behavior: 'smooth' })
-              }
-            >
-              Search a route
-            </Button>
-          </div>
+        <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-10 px-6 pb-16 pt-32 sm:pt-36 lg:min-h-[760px] lg:grid-cols-[1fr_460px] lg:gap-14 lg:pb-24">
+          <div className="text-white">
+            <p className="inline-flex animate-[fade-up_0.6s_var(--ease-out)_both] items-center gap-2 rounded-full bg-white/10 px-3.5 py-1.5 text-sm font-semibold ring-1 ring-white/20 backdrop-blur">
+              <span className="h-2 w-2 rounded-full bg-rose" aria-hidden="true" />
+              Intercity buses across northern Nigeria, Abuja and Lagos
+            </p>
+            <h1 className="mt-6 animate-[fade-up_0.7s_var(--ease-out)_0.08s_both] font-display text-[2.6rem] font-extrabold leading-[1.02] sm:text-6xl lg:text-7xl">
+              Book your bus seat in <Scribble delay={800}>minutes</Scribble>.
+            </h1>
+            <p className="mt-6 max-w-lg animate-[fade-up_0.7s_var(--ease-out)_0.16s_both] text-lg leading-relaxed text-white/85">
+              Choose your route, pay online and show your ticket on your phone at
+              the terminal. No queue at the counter.
+            </p>
 
-          <p className="mt-10 font-body text-xs tracking-wide text-white/45">
-            40+ terminals&nbsp; · &nbsp;12,000+ tickets issued&nbsp; · &nbsp;4.8 average rating
-          </p>
-        </div>
-      </section>
-
-      {/* Search widget — clean card, gently overlapping the hero seam */}
-      <section className="px-6">
-        <form
-          onSubmit={handleSubmit}
-          className="relative z-10 mx-auto -mt-16 flex w-full max-w-5xl flex-col gap-5 rounded-2xl bg-white p-6 text-left shadow-2xl shadow-asphalt/[0.12] sm:p-8"
-        >
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:gap-3">
-            <label className="block lg:flex-[1.2]">
-              <span className="mb-1.5 flex items-center gap-1.5 font-body text-[13px] font-semibold text-slate">
-                <MapPin size={13} className="text-danfo" /> Origin
-              </span>
-              <select
-                required
-                value={form.departure_location_id}
-                onChange={(e) =>
-                  setForm({ ...form, departure_location_id: e.target.value })
-                }
-                className="w-full cursor-pointer rounded-xl border border-asphalt/12 bg-white px-4 py-3 text-sm text-asphalt transition-colors focus:border-danfo focus:outline-none focus:ring-4 focus:ring-danfo/10"
-              >
-                <option value="">e.g., Lagos</option>
-                {locations.map((loc) => (
-                  <option
-                    key={loc.id}
-                    value={loc.id}
-                    disabled={String(loc.id) === form.arrival_location_id}
-                  >
-                    {loc.name}
-                  </option>
+            <div className="mt-8 flex animate-[fade-up_0.7s_var(--ease-out)_0.24s_both] flex-wrap items-center gap-x-6 gap-y-4">
+              <div className="flex -space-x-3">
+                {PHOTOS.faces.map((f) => (
+                  <img
+                    key={f}
+                    src={img(f, 96, 96)}
+                    alt=""
+                    className="h-11 w-11 rounded-full object-cover ring-2 ring-asphalt"
+                  />
                 ))}
-              </select>
-            </label>
-
-            <button
-              type="button"
-              onClick={swapLocations}
-              aria-label="Swap origin and destination"
-              className="mx-auto flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full bg-paper-dim text-slate transition-all hover:rotate-180 hover:bg-danfo/10 hover:text-danfo lg:mx-0 lg:mb-[13px]"
-            >
-              <ArrowLeftRight size={15} />
-            </button>
-
-            <label className="block lg:flex-[1.2]">
-              <span className="mb-1.5 flex items-center gap-1.5 font-body text-[13px] font-semibold text-slate">
-                <MapPin size={13} className="text-danfo" /> Destination
-              </span>
-              <select
-                required
-                value={form.arrival_location_id}
-                onChange={(e) =>
-                  setForm({ ...form, arrival_location_id: e.target.value })
-                }
-                className="w-full cursor-pointer rounded-xl border border-asphalt/12 bg-white px-4 py-3 text-sm text-asphalt transition-colors focus:border-danfo focus:outline-none focus:ring-4 focus:ring-danfo/10"
-              >
-                <option value="">e.g., Abuja</option>
-                {locations.map((loc) => (
-                  <option
-                    key={loc.id}
-                    value={loc.id}
-                    disabled={String(loc.id) === form.departure_location_id}
-                  >
-                    {loc.name}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label className="block lg:flex-1">
-              <span className="mb-1.5 flex items-center gap-1.5 font-body text-[13px] font-semibold text-slate">
-                <Calendar size={13} className="text-danfo" /> Departure Date
-              </span>
-              <input
-                required
-                type="date"
-                min={new Date().toISOString().slice(0, 10)}
-                value={form.departure_date}
-                onChange={(e) => setForm({ ...form, departure_date: e.target.value })}
-                className="w-full cursor-pointer rounded-xl border border-asphalt/12 bg-white px-4 py-3 text-sm text-asphalt transition-colors focus:border-danfo focus:outline-none focus:ring-4 focus:ring-danfo/10"
-              />
-            </label>
-
-            <label className="block lg:flex-1">
-              <span className="mb-1.5 flex items-center gap-1.5 font-body text-[13px] font-semibold text-slate">
-                <Users size={13} className="text-danfo" /> Passengers
-              </span>
-              <select
-                value={form.passenger_count}
-                onChange={(e) => setForm({ ...form, passenger_count: e.target.value })}
-                className="w-full cursor-pointer rounded-xl border border-asphalt/12 bg-white px-4 py-3 text-sm text-asphalt transition-colors focus:border-danfo focus:outline-none focus:ring-4 focus:ring-danfo/10"
-              >
-                {[1, 2, 3, 4, 5, 6].map((n) => (
-                  <option key={n} value={n}>
-                    {n} Passenger{n > 1 ? 's' : ''}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <Button type="submit" size="lg" className="w-full lg:w-auto">
-              Search
-            </Button>
-          </div>
-
-          <div className="flex flex-col gap-1.5 border-t border-asphalt/8 pt-5 sm:flex-row sm:items-center sm:gap-3">
-            <span className="font-body text-[13px] font-semibold text-slate">
-              Booking type
-            </span>
-            <div className="flex gap-2">
-              {[
-                { value: 'individual', label: 'Individual' },
-                { value: 'private', label: 'Private vehicle' },
-              ].map((opt) => (
-                <button
-                  key={opt.value}
-                  type="button"
-                  onClick={() => setForm({ ...form, booking_type: opt.value })}
-                  className={`cursor-pointer rounded-full border px-4 py-2 text-sm font-semibold transition-colors ${
-                    form.booking_type === opt.value
-                      ? 'border-danfo bg-danfo/8 text-danfo'
-                      : 'border-asphalt/12 text-slate hover:border-asphalt/25'
-                  }`}
-                >
-                  {opt.label}
-                </button>
-              ))}
+              </div>
+              <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold text-white/90">
+                <li className="flex items-center gap-1.5"><ShieldCheck size="1.1em" className="text-sky" aria-hidden="true" /> Secure Paystack payment</li>
+                <li className="flex items-center gap-1.5"><Smartphone size="1.1em" className="text-sky" aria-hidden="true" /> Ticket on your phone</li>
+              </ul>
             </div>
           </div>
 
-          {formError && <p className="font-body text-sm text-alert">{formError}</p>}
-          {loadError && <p className="font-body text-sm text-alert">{loadError}</p>}
-        </form>
-      </section>
-
-      {/* Trust pillars — one accent color throughout, distinguished by icon only */}
-      <section className="px-6 py-20 sm:py-24">
-        <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-3">
-          {[
-            {
-              Icon: Armchair,
-              title: 'Real-time seat selection',
-              copy: 'Choose your preferred seat directly from our live seat map — no surprises, just your choice.',
-            },
-            {
-              Icon: ShieldCheck,
-              title: 'Secure payments',
-              copy: 'Bank-grade encryption on every transaction, powered by Paystack, with total peace of mind.',
-            },
-            {
-              Icon: Ticket,
-              title: 'Digital tickets',
-              copy: 'Go paperless. Access your ticket instantly on your phone — print, save, or share it.',
-            },
-          ].map(({ Icon, title, copy }, i) => (
-            <Reveal key={title} delay={i * 100}>
-              <div className="flex h-full flex-col items-start rounded-2xl bg-white p-7 shadow-sm shadow-asphalt/[0.04] transition-shadow duration-300 hover:shadow-lg hover:shadow-asphalt/[0.06]">
-                <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl bg-danfo/8">
-                  <Icon className="text-danfo" size={20} strokeWidth={2} />
-                </div>
-                <h3 className="font-display text-base font-bold text-asphalt">{title}</h3>
-                <p className="mt-2 font-body text-sm leading-relaxed text-slate">{copy}</p>
-              </div>
-            </Reveal>
-          ))}
+          <div className="animate-[fade-up_0.8s_var(--ease-out)_0.2s_both]">
+            <SearchPanel />
+          </div>
         </div>
       </section>
 
-      {/* Signature ticket preview */}
-      <section className="mx-auto max-w-6xl px-6 pb-20 sm:pb-24">
-        <Reveal>
-          <div className="inline-block rounded-full bg-danfo/8 px-3 py-1 font-body text-xs font-bold text-danfo">
-            Why TashaXpress
+      <CityMarquee />
+
+      <FrequentRoutes />
+
+      {/* ── Two ways to ride ─────────────────────────────────── */}
+      <section className="px-6 pb-20 sm:pb-24" aria-labelledby="ride-heading">
+        <div className="mx-auto max-w-6xl">
+          <Reveal>
+            <h2 id="ride-heading" className="font-display text-4xl font-bold leading-tight text-asphalt sm:text-5xl">
+              Travel <Scribble variant="circle" delay={200}>your</Scribble> way
+            </h2>
+          </Reveal>
+          <div className="mt-10 grid gap-5 md:grid-cols-2">
+            {[
+              {
+                photo: PHOTOS.hiace,
+                alt: 'Rear of a white Toyota HiAce bus',
+                tag: 'Shared bus',
+                title: 'Book a seat',
+                copy: 'Ride with other passengers on a scheduled HiAce or coach. Pay only for the seats you need.',
+                to: '/?type=individual#search',
+                cta: 'Find a seat',
+              },
+              {
+                photo: PHOTOS.couple,
+                alt: 'A couple in matching pink traditional outfits',
+                tag: 'Whole vehicle',
+                title: 'Hire a whole bus',
+                copy: 'For weddings, family trips, church or mosque events and staff travel. The bus is yours alone.',
+                to: '/?type=private#search',
+                cta: 'Hire a bus',
+              },
+            ].map((c, i) => (
+              <Reveal key={c.title} delay={i * 120}>
+                <Link to={c.to} className="group relative block h-[420px] overflow-hidden rounded-3xl bg-asphalt sm:h-[480px]">
+                  <img
+                    src={img(c.photo, 900)}
+                    alt={c.alt}
+                    loading="lazy"
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-(--ease-out) group-hover:scale-105"
+                  />
+                  <span className="absolute inset-0 bg-gradient-to-t from-asphalt/90 via-asphalt/20 to-transparent" aria-hidden="true" />
+                  <span className="absolute left-5 top-5 rounded-full bg-rose px-3 py-1 text-xs font-bold uppercase tracking-wider text-white">
+                    {c.tag}
+                  </span>
+                  <div className="absolute inset-x-4 bottom-4">
+                  <LiquidGlass radius={22} tint="rgba(10,31,60,0.28)" className="p-5 text-white">
+                    <h3 className="font-display text-2xl font-bold">{c.title}</h3>
+                    <p className="mt-1.5 text-[15px] leading-relaxed text-white/85">{c.copy}</p>
+                    <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-bold text-white">
+                      {c.cta}
+                      <ArrowRight size="1.1em" className="transition-transform duration-300 ease-(--ease-out) group-hover:translate-x-1" aria-hidden="true" />
+                    </span>
+                  </LiquidGlass>
+                  </div>
+                </Link>
+              </Reveal>
+            ))}
           </div>
-          <h2 className="mt-6 max-w-lg font-display text-3xl font-bold text-asphalt">
-            What you'll hold, the moment you pay.
-          </h2>
-          <p className="mt-3 max-w-md font-body text-sm text-slate">
-            Every confirmed booking becomes a ticket like this — seat, route,
-            and reference, ready to show at the terminal.
-          </p>
-        </Reveal>
-        <Reveal delay={150}>
-          <div className="mt-8">
-            <TicketCard
-              reference="TXP-BK-DEMO0001"
-              from="Kano"
-              to="Abuja"
-              date="2026-07-10"
-              time="07:00 AM"
-              passengerName="Sample Passenger"
-              seatNumber="12A"
-              status="confirmed"
-            />
-          </div>
-        </Reveal>
+        </div>
       </section>
 
-      {/* CTA band */}
-      <section className="mx-6 mb-6 rounded-2xl bg-asphalt px-6 py-16 text-center sm:mx-10 sm:py-20">
-        <h2 className="font-display text-3xl font-bold text-white sm:text-4xl">
-          Ready for your next trip?
-        </h2>
-        <p className="mx-auto mt-3 max-w-md font-body text-sm text-white/60">
-          Search a route above and hold your seat in under two minutes.
-        </p>
-        <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
-          <Button
-            variant="primary"
-            onClick={() =>
-              document.querySelector('form')?.scrollIntoView({ behavior: 'smooth' })
-            }
-          >
-            Book a Trip Now
-          </Button>
+      <UpcomingDepartures />
+
+      {/* ── How it works ─────────────────────────────────────── */}
+      <section className="relative overflow-hidden bg-asphalt px-6 py-20 text-white sm:py-24" aria-labelledby="how-heading">
+        <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[1fr_1.1fr]">
+          <Reveal className="relative">
+            <div className="relative overflow-hidden rounded-3xl">
+              <img
+                src={img(PHOTOS.window, 900, 1000)}
+                alt="A smiling traveller leaning out of a bus window"
+                loading="lazy"
+                className="aspect-[9/10] w-full object-cover"
+              />
+            </div>
+            <div className="absolute -bottom-6 right-4 [animation:float_6s_var(--ease-in-out)_infinite] sm:-right-6">
+            <LiquidGlass radius={20} tint="rgba(255,255,255,0.18)" className="p-4">
+              <p className="flex items-center gap-2 text-sm font-bold text-white">
+                <Ticket size="1.1em" aria-hidden="true" /> Ticket ready
+              </p>
+              <p className="mt-1 font-mono text-xs text-white/85">Seat 12A · Kano → Abuja</p>
+            </LiquidGlass>
+            </div>
+          </Reveal>
+
+          <div>
+            <Reveal>
+              <h2 id="how-heading" className="font-display text-4xl font-bold leading-tight sm:text-5xl">
+                Three steps to your <Scribble delay={200}>seat</Scribble>
+              </h2>
+            </Reveal>
+            <ol className="mt-10 space-y-6">
+              {STEPS.map(({ Icon, title, copy }, i) => (
+                <Reveal as="li" key={title} delay={i * 110} className="flex gap-5">
+                  <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-rose font-display text-2xl font-bold text-white">
+                    {i + 1}
+                  </span>
+                  <div>
+                    <h3 className="flex items-center gap-2 font-display text-xl font-bold">
+                      {title} <Icon size="0.9em" className="text-sky" aria-hidden="true" />
+                    </h3>
+                    <p className="mt-1 text-[15px] leading-relaxed text-white/75">{copy}</p>
+                  </div>
+                </Reveal>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Ticket on your phone ─────────────────────────────── */}
+      <section className="px-6 py-20 sm:py-24" aria-labelledby="phone-heading">
+        <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2">
+          <Reveal>
+            <p className="text-sm font-bold uppercase tracking-wider text-rose">After you book</p>
+            <h2 id="phone-heading" className="mt-2 font-display text-4xl font-bold leading-tight text-asphalt sm:text-5xl">
+              Your whole trip, in your <Scribble variant="underline" delay={200}>pocket</Scribble>
+            </h2>
+            <p className="mt-4 max-w-md text-[15px] leading-relaxed text-slate">
+              Your ticket shows your seat, route and booking reference. Show it at
+              the terminal or print it — and manage the trip from the same place.
+            </p>
+            <ul className="mt-8 grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
+              {AFTER.map(({ Icon, title, copy }) => (
+                <li key={title} className="flex gap-4 rounded-2xl bg-paper-dim p-4">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-danfo text-white">
+                    <Icon size={18} aria-hidden="true" />
+                  </span>
+                  <div>
+                    <h3 className="font-bold text-asphalt">{title}</h3>
+                    <p className="mt-0.5 text-sm text-slate">{copy}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+
+          <Reveal delay={150} className="relative">
+            <div className="overflow-hidden rounded-3xl bg-rose">
+              <img
+                src={img(PHOTOS.phone, 900, 1000)}
+                alt="A woman smiling at her phone"
+                loading="lazy"
+                className="aspect-[9/10] w-full object-cover"
+              />
+            </div>
+            <span className="absolute -left-3 top-8 rotate-[-6deg] rounded-full bg-danfo px-4 py-2 text-sm font-bold text-white shadow-lg [animation:float_7s_var(--ease-in-out)_infinite]">
+              Show it at the terminal
+            </span>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ── Closing call to action ───────────────────────────── */}
+      <section className="px-6 pb-4">
+        <div className="relative isolate mx-auto max-w-6xl overflow-hidden rounded-[32px] bg-asphalt">
+          <img
+            src={img(PHOTOS.traveller, 1600)}
+            alt=""
+            loading="lazy"
+            className="absolute inset-0 -z-10 h-full w-full object-cover object-[center_30%]"
+          />
+          <div className="absolute inset-0 -z-10 bg-gradient-to-r from-asphalt via-asphalt/80 to-asphalt/10" aria-hidden="true" />
+          <div className="max-w-xl px-8 py-16 text-white sm:px-14 sm:py-24">
+            <h2 className="font-display text-4xl font-bold leading-tight sm:text-5xl">
+              Your next trip <Scribble delay={200}>starts</Scribble> here.
+            </h2>
+            <p className="mt-4 text-lg text-white/80">Pick a route, choose a seat and travel.</p>
+            <a
+              href="#search"
+              className="mt-8 inline-flex items-center gap-2 rounded-full bg-rose px-7 py-4 text-base font-bold text-white transition-[background-color,transform] duration-200 ease-(--ease-out) hover:-translate-y-0.5 hover:bg-rose-dark"
+            >
+              Book your seat <ArrowRight size={18} aria-hidden="true" />
+            </a>
+          </div>
         </div>
       </section>
     </div>

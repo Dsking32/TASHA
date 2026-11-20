@@ -10,17 +10,17 @@ export default function Footer() {
   return (
     <footer className="mt-24 bg-asphalt text-paper print:hidden">
       {/* route line runs along the seam between the app and the footer */}
-      <RouteLine className="h-6 w-full text-danfo" />
+      <RouteLine className="h-6 w-full text-sky" />
 
       <div className="mx-auto max-w-6xl px-6 pb-10 pt-4">
         <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-4">
           <div className="md:col-span-2">
-            <Link to="/" className="inline-block font-display text-xl font-extrabold tracking-tight text-paper">
-              Tasha<span className="text-danfo">Xpress</span>
+            <Link to="/" aria-label="TASHA home" className="inline-block">
+              <img src="/logo-wordmark-light.svg" alt="TASHA Nigeria Limited" className="h-9 w-auto" />
             </Link>
             <p className="mt-4 max-w-sm font-body text-sm text-paper/70">
-              Intercity bus booking for Nigeria — search a route, pick your
-              seat, and hold a ticket that's ready the moment you pay.
+              Intercity bus tickets across Nigeria. Choose your route, pay
+              online, and show your ticket at the terminal.
             </p>
             <div className="mt-5 flex items-center gap-2 font-mono text-xs text-paper/50">
               <MapPinned size={14} />
@@ -34,14 +34,14 @@ export default function Footer() {
             </h3>
             <ul className="mt-4 space-y-3 font-body text-sm text-paper/70">
               <li>
-                <Link to="/" className="transition-colors hover:text-danfo">
+                <Link to="/" className="transition-colors hover:text-sky">
                   Search a route
                 </Link>
               </li>
               <li>
                 <Link
                   to={isAuthed ? '/dashboard/bookings' : '/login'}
-                  className="transition-colors hover:text-danfo"
+                  className="transition-colors hover:text-sky"
                 >
                   My bookings
                 </Link>
@@ -49,7 +49,7 @@ export default function Footer() {
               <li>
                 <Link
                   to={isAuthed ? '/profile' : '/register'}
-                  className="transition-colors hover:text-danfo"
+                  className="transition-colors hover:text-sky"
                 >
                   {isAuthed ? 'Profile' : 'Create an account'}
                 </Link>
@@ -65,7 +65,7 @@ export default function Footer() {
               <li>
                 <a
                   href="mailto:support@tashaxpress.com"
-                  className="inline-flex items-center gap-2 transition-colors hover:text-danfo"
+                  className="inline-flex items-center gap-2 break-all transition-colors hover:text-sky"
                 >
                   <Mail size={14} />
                   support@tashaxpress.com
@@ -79,9 +79,8 @@ export default function Footer() {
         </div>
 
         <div className="mt-10 flex flex-col gap-2 border-t border-paper/10 pt-6 text-xs text-paper/50 sm:flex-row sm:items-center sm:justify-between">
-          <span className="font-mono">© {year} TashaXpress. All rights reserved.</span>
-          <span className="font-mono">Book your route. Hold your seat. Travel Nigeria.</span>
-        </div>
+          <span className="font-mono">© {year} Tasha Nigeria Limited. All rights reserved.</span>
+                  </div>
       </div>
     </footer>
   );
