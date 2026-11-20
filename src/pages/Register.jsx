@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { sendVerificationToken } from '../api/auth';
 import Field from '../components/ui/Field';
@@ -10,6 +10,7 @@ import { PHOTOS } from '../constants/images';
 export default function Register() {
   const { register } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [form, setForm] = useState({
     first_name: '',
     last_name: '',
@@ -47,7 +48,7 @@ export default function Register() {
       } catch {
         sent = false;
       }
-      navigate('/verify-email', { state: { email: form.email, justSent: sent } });
+      navigate('/verify-email', { state: { email: form.email, justSent: sent, from: location.state?.from } });
     } catch (err) {
       setFormError(err.message);
       setErrors(err.errors || {});
@@ -140,7 +141,7 @@ export default function Register() {
 
       <p className="mt-8 text-center text-sm text-slate">
         Already have an account?{' '}
-        <Link to="/login" className="font-bold text-rose hover:text-rose-dark">
+        <Link to="/login" state={{ from: location.state?.from }} className="font-bold text-rose hover:text-rose-dark">
           Log in
         </Link>
       </p>

@@ -70,7 +70,7 @@ export default function RescheduleBooking() {
       // nothing threw. Surface it plainly instead of a false "complete".
       setSubmitError(
         res.message ||
-          "Couldn't confirm the reschedule went through — check My Bookings for the latest status."
+          "Couldn't confirm the reschedule went through — check your booking for the latest status."
       );
     } catch (err) {
       setSubmitError(err.message);

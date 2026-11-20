@@ -187,3 +187,11 @@ export const getSharedRide = (token) =>
   //   passengers: { count, manifest: [{ name, passenger_category }] },
   // }
   client.get(`/share/${token}`);
+
+// ---- Guest access -------------------------------------------------------------
+
+export const lookupGuestBooking = (payload) =>
+  // payload: { reference, email }. Returns { booking_id, reference, status,
+  // guest_token }. 404 when reference/email don't match; 409 when the
+  // booking belongs to an account (sign in instead).
+  client.post('/trips/bookings/lookup', payload);

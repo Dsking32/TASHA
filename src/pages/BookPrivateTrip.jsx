@@ -1,9 +1,13 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { bookPrivateTrip } from '../api/trips';
 import Field from '../components/ui/Field';
 import Button from '../components/ui/Button';
 import PageHeader from '../components/ui/PageHeader';
+import CheckoutGate from '../components/booking/CheckoutGate';
+import useCheckoutStage from '../hooks/useCheckoutStage';
+import { useAuth } from '../context/AuthContext';
+import { guestBookings } from '../utils/guestBookings';
 
 export default function BookPrivateTrip() {
   const { scheduleId } = useParams();
@@ -30,6 +34,22 @@ export default function BookPrivateTrip() {
     emergency_contact_name: '',
     emergency_contact_phone: '',
   });
+
+  // Signed in: start the primary contact from the profile (still editable).
+  const { user } = useAuth();
+  useEffect(() => {
+    if (!user) return;
+    setContact((c) => ({
+      ...c,
+      contact_first_name: c.contact_first_name || user.first_name || '',
+      contact_last_name: c.contact_last_name || user.last_name || '',
+      contact_email: c.contact_email || user.email || '',
+      contact_phone: c.contact_phone || user.phone_number || '',
+    }));
+  }, [user]);
+
+  const [guestChosen, setGuestChosen] = useState(false);
+  const stage = useCheckoutStage(guestChosen);
 
   const [errors, setErrors] = useState({});
   const [formError, setFormError] = useState('');
@@ -65,9 +85,13 @@ export default function BookPrivateTrip() {
       const booking = res.data?.booking;
       if (!booking?.id) {
         setFormError(
-          "Your booking may have gone through, but we couldn't confirm it here — check My Bookings before trying again."
+          "Your booking may have gone through, but we couldn't confirm it here — check your email before trying again."
         );
         return;
+      }
+      // Guests get a private access token once; keep it on this device.
+      if (res.data?.guest_token) {
+        guestBookings.save(booking.id, res.data.guest_token, booking.reference);
       }
       navigate(`/bookings/${booking.id}`, { state: { booking } });
     } catch (err) {
@@ -78,6 +102,19 @@ export default function BookPrivateTrip() {
       submittingRef.current = false;
     }
   };
+
+  if (stage === 'checking') {
+    return (
+      <div className="mx-auto max-w-3xl space-y-4 px-6 py-12" aria-busy="true">
+        <div className="skeleton h-10 w-2/3 rounded-xl" />
+        <div className="skeleton h-48 rounded-3xl" />
+      </div>
+    );
+  }
+
+  if (stage === 'gate') {
+    return <CheckoutGate onGuest={() => setGuestChosen(true)} />;
+  }
 
   return (
     <div className="mx-auto max-w-2xl px-6 py-12">
@@ -138,7 +175,7 @@ export default function BookPrivateTrip() {
         />
 
         <label className="block">
-          <span className="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.14em] text-slate">
+          <span className="mb-1.5 block text-[13px] font-bold text-asphalt">
             Additional stops (comma-separated, optional)
           </span>
           <input
@@ -150,7 +187,7 @@ export default function BookPrivateTrip() {
         </label>
 
         <label className="block">
-          <span className="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.14em] text-slate">
+          <span className="mb-1.5 block text-[13px] font-bold text-asphalt">
             Special requirements (optional)
           </span>
           <textarea
@@ -219,6 +256,9 @@ export default function BookPrivateTrip() {
           <legend className="px-2 font-display text-sm font-semibold text-asphalt">
             Emergency contact
           </legend>
+          <p className="mb-4 px-2 text-sm text-slate">
+            Someone we can call if anything happens on the trip, ideally not travelling with you. Required for every booking.
+          </p>
           <div className="grid grid-cols-2 gap-4">
             <Field
               label="Name"

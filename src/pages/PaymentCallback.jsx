@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { verifyPayment, getBookingDetail } from '../api/trips';
 import Button from '../components/ui/Button';
+import { useAuth } from '../context/AuthContext';
 
 const STATUS_COPY = {
   confirmed: {
@@ -27,6 +28,7 @@ const STATUS_COPY = {
 };
 
 export default function PaymentCallback() {
+  const { isAuthed } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [status, setStatus] = useState(null);
@@ -47,7 +49,7 @@ export default function PaymentCallback() {
 
     if (!id) {
       setError(
-        "Couldn't tell which booking this payment belongs to — check My Bookings for the latest status."
+        "Couldn't tell which booking this payment belongs to — check your booking for the latest status."
       );
       setLoading(false);
       return;
@@ -84,8 +86,8 @@ export default function PaymentCallback() {
     return (
       <div className="mx-auto max-w-lg px-6 py-24 text-center">
         <p className="font-mono text-sm text-alert">{error}</p>
-        <Link to="/dashboard/bookings" className="mt-6 inline-block">
-          <Button variant="ghost">Go to My Bookings</Button>
+        <Link to={isAuthed ? '/dashboard/bookings' : '/manage-booking'} className="mt-6 inline-block">
+          <Button variant="ghost">{isAuthed ? 'Go to My bookings' : 'Find my booking'}</Button>
         </Link>
       </div>
     );

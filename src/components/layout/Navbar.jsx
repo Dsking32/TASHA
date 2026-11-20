@@ -3,9 +3,13 @@ import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { ArrowRight, LogOut, Menu, Ticket, UserRound, X } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
-const LINKS = [
+// Signed in: "My bookings" (account dashboard). Guests: "Manage booking"
+// (find a booking by reference + email).
+const linksFor = (isAuthed) => [
   { to: '/', label: 'Book a trip', end: true },
-  { to: '/dashboard/bookings', label: 'My bookings' },
+  isAuthed
+    ? { to: '/dashboard/bookings', label: 'My bookings' }
+    : { to: '/manage-booking', label: 'Manage booking' },
 ];
 
 /**
@@ -37,6 +41,7 @@ export default function Navbar() {
   // The profile API returns first_name/last_name separately.
   const firstName = user?.first_name || user?.email?.split('@')[0];
 
+  const LINKS = linksFor(isAuthed);
   const isHome = pathname === '/';
   const light = isHome && !scrolled && !menuOpen;
 
@@ -173,7 +178,7 @@ export default function Navbar() {
               }
             >
               {l.label}
-              {l.to === '/dashboard/bookings' ? <Ticket size={18} aria-hidden="true" /> : <ArrowRight size={18} aria-hidden="true" />}
+              {l.to !== '/' ? <Ticket size={18} aria-hidden="true" /> : <ArrowRight size={18} aria-hidden="true" />}
             </NavLink>
           ))}
 
