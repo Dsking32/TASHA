@@ -83,12 +83,13 @@ function Legend() {
     { cls: 'bg-sky-soft ring-2 ring-asphalt/20', label: 'Front row' },
     { cls: 'bg-rose', label: 'Your pick' },
     { cls: 'bg-asphalt/85', label: 'Taken' },
+    { cls: 'w-1.5 bg-rose/70', label: 'Door' },
   ];
   return (
     <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold text-slate">
       {items.map((i) => (
         <li key={i.label} className="flex items-center gap-2">
-          <span className={`h-4 w-4 rounded-md ${i.cls}`} aria-hidden="true" />
+          <span className={`h-4 rounded-md ${i.cls.includes('w-') ? '' : 'w-4'} ${i.cls}`} aria-hidden="true" />
           {i.label}
         </li>
       ))}
@@ -269,9 +270,6 @@ export default function SeatSelection() {
                 {/* cabin rows; sliding door on the right */}
                 <div className="relative space-y-3 px-6 pb-6">
                   <span aria-hidden="true" className="absolute -right-0.5 top-0 flex h-[72px] w-2 items-center rounded-l-full bg-rose/70" />
-                  <span aria-hidden="true" className="absolute -right-1 top-[78px] w-12 -translate-x-full text-right text-[10px] font-bold uppercase tracking-wider text-rose">
-                    Door
-                  </span>
                   {cabinRows.map((row, r) => (
                     <div key={r} className="flex items-center justify-between gap-2">
                       <span className="w-5 text-center text-[11px] font-bold text-slate/70">{r + 2}</span>
