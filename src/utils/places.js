@@ -20,4 +20,4 @@ export function formatDuration(mins) {
 }
 
 // Seeded landmarks already read "Near Kano Zoo"; avoid "near Near ...".
-export const nearText = (l) => (/^nearb/i.test(l) ? l.charAt(0).toLowerCase() + l.slice(1) : `near ${l}`);
+export const nearText = (l) => (/^near\s/i.test(l) ? l.charAt(0).toLowerCase() + l.slice(1) : `near ${l}`);
