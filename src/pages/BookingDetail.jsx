@@ -80,45 +80,62 @@ export default function BookingDetail() {
         return;
       }
 
+      const finish = () => {
+        setPayLoading(false);
+        payingRef.current = false;
+      };
+
+      const refresh = async () => {
+        const detail = await getBookingDetail(id);
+        setBooking(detail.data?.booking);
+        setPaymentHistory(detail.data?.payment_history || []);
+        return detail.data?.booking;
+      };
+
       openPaystackPopup({
         accessCode,
-        onSettled: async () => {
-          // We never trust Paystack's own success/close signal directly —
-          // always re-check with our backend, which is the source of truth.
-          setPayNotice('Checking payment status…');
+        // Paystack says it's paid. Our backend is still the source of truth:
+        // verify, and give Paystack a few seconds to settle transfers/USSD.
+        onSuccess: async () => {
+          setPayNotice('Confirming your payment…');
           try {
-            const verifyRes = await verifyPayment(id);
-            const status = verifyRes.data?.booking_status;
-
-            if (status === 'confirmed') {
-              const detail = await getBookingDetail(id);
-              const freshBooking = detail.data?.booking;
-              const isPrivate = freshBooking?.booking_type === 'private';
-              navigate(isPrivate ? `/bookings/${id}/tickets` : `/bookings/${id}/seats`);
-              return;
+            let failed = false;
+            for (let attempt = 0; attempt < 6; attempt += 1) {
+              const verifyRes = await verifyPayment(id);
+              if (verifyRes.data?.booking_status === 'confirmed') {
+                const fresh = await refresh();
+                navigate(fresh?.booking_type === 'private' ? `/bookings/${id}/tickets` : `/bookings/${id}/seats`);
+                return;
+              }
+              if (['failed', 'abandoned', 'reversed'].includes(verifyRes.data?.payment_status)) {
+                failed = true;
+                break;
+              }
+              await new Promise((r) => setTimeout(r, 2500));
             }
-
-            // Not confirmed — refresh the booking in place so the status
-            // badge and payment history reflect reality, and tell the
-            // person plainly what happened.
-            const detail = await getBookingDetail(id);
-            setBooking(detail.data?.booking);
-            setPaymentHistory(detail.data?.payment_history || []);
+            await refresh();
             setPayNotice('');
-            if (status === 'payment_failed') {
-              setPayError('That payment did not go through. You can try again.');
-            } else if (status === 'pending_payment') {
-              setPayError(
-                "We haven't received confirmation yet — if you completed payment, give it a moment and refresh."
-              );
-            }
+            setPayError(
+              failed
+                ? "That payment didn't go through. Your booking is still saved, so you can try again."
+                : "We haven't received confirmation from Paystack yet. If money left your account, refresh in a minute; you won't be charged twice."
+            );
           } catch (err) {
             setPayNotice('');
             setPayError(err.message);
           } finally {
-            setPayLoading(false);
-            payingRef.current = false;
+            finish();
           }
+        },
+        // Closed without paying: nothing to verify, the booking stays open.
+        onClose: () => {
+          setPayNotice('');
+          setPayError('Payment not completed. Your booking is still saved, so you can pay when ready.');
+          finish();
+        },
+        onError: (err) => {
+          setPayError(err.message);
+          finish();
         },
       });
     } catch (err) {

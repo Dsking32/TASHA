@@ -9,13 +9,9 @@
 // this is written defensively:
 //   - it loads the inline script once and caches the promise
 //   - it wires up onSuccess/onClose/onError as much as the SDK supports
-//   - it ALSO falls back to a window-focus listener, so if the popup closes
-//     (payment done or cancelled) without an event ever firing, we still
-//     call onSettled and let the backend verification decide what happened.
 //
-// onSettled is intentionally the *only* signal exposed to callers — the
-// caller should never trust "success" here and must re-verify with the
-// backend (BookingDetail.jsx already does this).
+// Callers must never trust "success" here and always re-verify with the
+// backend (BookingDetail.jsx does this).
 
 // v2 is required here — v1's PaystackPop.setup() only knows how to start a
 // brand-new transaction (it demands email/amount directly). Resuming a
@@ -63,62 +59,45 @@ function loadPaystackScript() {
 /**
  * Open the Paystack popup to resume an already-initialized transaction.
  *
+ * The caller must re-verify with the backend after onSuccess — this helper
+ * never decides whether a payment went through.
+ *
+ * There is deliberately no "window regained focus" fallback: on phones,
+ * switching to a bank app for transfer/USSD fires focus before the money is
+ * sent, which used to trigger verification mid-payment.
+ *
  * @param {Object} params
- * @param {string} params.accessCode - access_code returned by the backend's
- *   initiatePayment call.
- * @param {() => void} params.onSettled - called exactly once, whenever the
- *   popup is done (success, close, or error). The caller is responsible for
- *   re-checking payment status with the backend — this callback carries no
- *   success/failure info on purpose.
- * @param {(err: Error) => void} [params.onError] - called if the popup
- *   itself could not be opened at all (e.g. script failed to load).
+ * @param {string} params.accessCode - access_code from initiatePayment.
+ * @param {() => void} params.onSuccess - Paystack says the charge went through.
+ * @param {() => void} [params.onClose] - popup closed without paying.
+ * @param {(err: Error) => void} [params.onError] - popup could not open.
  */
-export async function openPaystackPopup({ accessCode, onSettled, onError }) {
+export async function openPaystackPopup({ accessCode, onSuccess, onClose, onError }) {
   if (!accessCode) {
     onError?.(new Error('Missing Paystack access code.'));
     return;
   }
 
   let settled = false;
-  const settleOnce = () => {
+  const once = (fn) => (...args) => {
     if (settled) return;
     settled = true;
-    cleanupFocusFallback();
-    onSettled?.();
-  };
-
-  // Fallback: if the user closes/completes the popup in a way that doesn't
-  // fire any SDK callback, the browser tab regains focus. Treat that as
-  // "something happened, go verify" — but debounce briefly so it doesn't
-  // race the SDK's own callback firing first.
-  let focusTimer = null;
-  const onWindowFocus = () => {
-    focusTimer = setTimeout(settleOnce, 400);
-  };
-  const cleanupFocusFallback = () => {
-    if (focusTimer) clearTimeout(focusTimer);
-    window.removeEventListener('focus', onWindowFocus);
+    fn?.(...args);
   };
 
   try {
     const PaystackPop = await loadPaystackScript();
     const popup = new PaystackPop();
 
-    window.addEventListener('focus', onWindowFocus);
-
     popup.resumeTransaction(accessCode, {
-      onSuccess: settleOnce,
-      onCancel: settleOnce,
-      onClose: settleOnce,
-      onError: (err) => {
-        // A rejected/failed transaction still counts as "settled" — the
-        // caller re-verifies with the backend either way.
-        settleOnce();
+      onSuccess: once(onSuccess),
+      onCancel: once(onClose),
+      onError: once((err) => {
         console.error('[Paystack] transaction error:', err);
-      },
+        onClose?.();
+      }),
     });
   } catch (err) {
-    cleanupFocusFallback();
     onError?.(err instanceof Error ? err : new Error(String(err)));
   }
 }
