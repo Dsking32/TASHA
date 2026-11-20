@@ -31,6 +31,7 @@ export const PHOTOS = {
   // Destination cities
   abujaMosque: '1609657726788-44564a8f304a',
   abujaFlags: '1733122051092-c19022119205',
+  abujaInterchange: '1780345493576-ed325a2dd2d6',
   lagosBridge: '1719314073622-9399d167725b',
   lagosSkyline: '1618828665011-0abd973f7bb8',
   durbar: '1668246153111-07549350eda7',

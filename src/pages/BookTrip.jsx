@@ -126,7 +126,7 @@ export default function BookTrip() {
 
       <form onSubmit={onSubmit} className="mt-8 space-y-10">
         {passengers.map((p, i) => (
-          <fieldset key={i} className="rounded-2xl border border-asphalt/10 p-5">
+          <fieldset key={i} className="rounded-3xl bg-white p-5 ring-1 ring-asphalt/8">
             <legend className="flex w-full items-center justify-between px-2">
               <span className="font-display text-sm font-semibold text-asphalt">
                 Passenger {i + 1}
@@ -151,7 +151,7 @@ export default function BookTrip() {
                 <select
                   value={p.title}
                   onChange={(e) => updatePassenger(i, 'title', e.target.value)}
-                  className="w-full rounded-lg border border-asphalt/15 bg-paper px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-danfo/60"
+                  className="w-full rounded-xl border border-transparent bg-paper-dim px-3 py-3 text-sm font-medium text-asphalt transition-[border-color,background-color,box-shadow] duration-200 focus:border-danfo focus:bg-white focus:outline-none focus:ring-4 focus:ring-sky/20"
                 >
                   <option>Mr</option>
                   <option>Mrs</option>
@@ -167,7 +167,7 @@ export default function BookTrip() {
                 <select
                   value={p.passenger_category}
                   onChange={(e) => updatePassenger(i, 'passenger_category', e.target.value)}
-                  className="w-full rounded-lg border border-asphalt/15 bg-paper px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-danfo/60"
+                  className="w-full rounded-xl border border-transparent bg-paper-dim px-3 py-3 text-sm font-medium text-asphalt transition-[border-color,background-color,box-shadow] duration-200 focus:border-danfo focus:bg-white focus:outline-none focus:ring-4 focus:ring-sky/20"
                 >
                   <option value="adult">Adult</option>
                   <option value="child">Child</option>
@@ -182,7 +182,7 @@ export default function BookTrip() {
                 <select
                   value={p.gender}
                   onChange={(e) => updatePassenger(i, 'gender', e.target.value)}
-                  className="w-full rounded-lg border border-asphalt/15 bg-paper px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-danfo/60"
+                  className="w-full rounded-xl border border-transparent bg-paper-dim px-3 py-3 text-sm font-medium text-asphalt transition-[border-color,background-color,box-shadow] duration-200 focus:border-danfo focus:bg-white focus:outline-none focus:ring-4 focus:ring-sky/20"
                 >
                   <option value="male">Male</option>
                   <option value="female">Female</option>
@@ -248,14 +248,14 @@ export default function BookTrip() {
           <button
             type="button"
             onClick={addPassenger}
-            className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-asphalt/20 py-4 font-display text-sm font-semibold text-slate transition-colors hover:border-danfo/40 hover:bg-danfo/5 hover:text-danfo"
+            className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-asphalt/20 py-4 font-display text-sm font-semibold text-slate transition-colors hover:border-rose/50 hover:bg-rose-soft hover:text-rose"
           >
             <UserPlus size={16} />
             Add another passenger
           </button>
         )}
 
-        <fieldset className="rounded-2xl border border-asphalt/10 p-5">
+        <fieldset className="rounded-3xl bg-white p-5 ring-1 ring-asphalt/8">
           <legend className="px-2 font-display text-sm font-semibold text-asphalt">
             Primary contact
           </legend>
@@ -309,7 +309,7 @@ export default function BookTrip() {
           </div>
         </fieldset>
 
-        <fieldset className="rounded-2xl border border-asphalt/10 p-5">
+        <fieldset className="rounded-3xl bg-white p-5 ring-1 ring-asphalt/8">
           <legend className="px-2 font-display text-sm font-semibold text-asphalt">
             Emergency contact
           </legend>

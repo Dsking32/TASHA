@@ -145,7 +145,7 @@ export default function BookPrivateTrip() {
             value={additionalStops}
             onChange={(e) => setAdditionalStops(e.target.value)}
             placeholder="Jabi Lake Mall, Wuse Market"
-            className="w-full rounded-lg border border-asphalt/15 bg-paper px-4 py-3 text-[15px] focus:outline-none focus:ring-2 focus:ring-danfo/60"
+            className="w-full rounded-xl border border-transparent bg-paper-dim px-4 py-3.5 text-[15px] font-medium text-asphalt transition-[border-color,background-color,box-shadow] duration-200 focus:border-danfo focus:bg-white focus:outline-none focus:ring-4 focus:ring-sky/20"
           />
         </label>
 
@@ -157,11 +157,11 @@ export default function BookPrivateTrip() {
             rows={3}
             value={form.special_requirements}
             onChange={(e) => setForm({ ...form, special_requirements: e.target.value })}
-            className="w-full rounded-lg border border-asphalt/15 bg-paper px-4 py-3 text-[15px] focus:outline-none focus:ring-2 focus:ring-danfo/60"
+            className="w-full rounded-xl border border-transparent bg-paper-dim px-4 py-3.5 text-[15px] font-medium text-asphalt transition-[border-color,background-color,box-shadow] duration-200 focus:border-danfo focus:bg-white focus:outline-none focus:ring-4 focus:ring-sky/20"
           />
         </label>
 
-        <fieldset className="rounded-2xl border border-asphalt/10 p-5">
+        <fieldset className="rounded-3xl bg-white p-5 ring-1 ring-asphalt/8">
           <legend className="px-2 font-display text-sm font-semibold text-asphalt">
             Primary contact
           </legend>
@@ -215,7 +215,7 @@ export default function BookPrivateTrip() {
           </div>
         </fieldset>
 
-        <fieldset className="rounded-2xl border border-asphalt/10 p-5">
+        <fieldset className="rounded-3xl bg-white p-5 ring-1 ring-asphalt/8">
           <legend className="px-2 font-display text-sm font-semibold text-asphalt">
             Emergency contact
           </legend>

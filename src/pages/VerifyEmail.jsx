@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { verifyEmail, sendVerificationToken } from '../api/auth';
 import Field from '../components/ui/Field';
 import Button from '../components/ui/Button';
-import PageHeader from '../components/ui/PageHeader';
+import AuthShell from '../components/layout/AuthShell';
 
 export default function VerifyEmail() {
   const location = useLocation();
@@ -67,14 +67,9 @@ export default function VerifyEmail() {
   };
 
   return (
-    <div className="mx-auto flex min-h-[70vh] max-w-md flex-col justify-center px-6 py-16">
-      <PageHeader
-        eyebrow="One more step"
-        title="Verify your email"
-        subtitle="Enter the code we sent to your email to activate your account."
-      />
+    <AuthShell eyebrow="One more step" title="Verify your email" subtitle="Enter the code we sent to your email to activate your account.">
 
-      <form onSubmit={onSubmit} className="mt-8 space-y-5">
+      <form onSubmit={onSubmit} className="space-y-5">
         <Field
           label="Email"
           name="email"
@@ -109,6 +104,6 @@ export default function VerifyEmail() {
           Resend code
         </Button>
       </form>
-    </div>
+    </AuthShell>
   );
 }
