@@ -89,7 +89,7 @@ export default function Login() {
 
         <p className="mt-8 text-center font-body text-sm text-slate">
           Don't have an account?{' '}
-          <Link to="/register" className="font-bold text-rose hover:text-rose-dark">
+          <Link to="/register" state={{ from: location.state?.from }} className="font-bold text-rose hover:text-rose-dark">
             Create an account
           </Link>
         </p>

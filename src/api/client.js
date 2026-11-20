@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { guestBookings } from '../utils/guestBookings';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1';
 
@@ -34,6 +35,12 @@ client.interceptors.request.use((config) => {
   const token = tokenStore.get();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
+  }
+  // Guest bookings: send the booking's access token on its own endpoints.
+  const match = /\/trips\/bookings\/(\d+)(\/|$)/.exec(config.url || '');
+  const guestToken = match && guestBookings.token(match[1]);
+  if (guestToken) {
+    config.headers['X-Booking-Token'] = guestToken;
   }
   return config;
 });

@@ -20,6 +20,7 @@ import SharedRide from './pages/SharedRide';
 import RescheduleBooking from './pages/RescheduleBooking';
 import Profile from './pages/Profile';
 import Placeholder from './pages/Placeholder';
+import ManageBooking from './pages/ManageBooking';
 
 export default function App() {
   return (
@@ -35,16 +36,19 @@ export default function App() {
         <Route path="/search" element={<SearchResults />} />
         <Route path="/share/:token" element={<SharedRide />} />
 
-        {/* Protected */}
+        {/* Booking: open to signed-in users and guests (guest access uses a per-booking token) */}
+        <Route path="/manage-booking" element={<ManageBooking />} />
+        <Route path="/book/:scheduleId" element={<BookTrip />} />
+        <Route path="/book-private/:scheduleId" element={<BookPrivateTrip />} />
+        <Route path="/bookings/:id" element={<BookingDetail />} />
+        <Route path="/bookings/:id/seats" element={<SeatSelection />} />
+        <Route path="/bookings/:id/tickets" element={<Tickets />} />
+        <Route path="/payment/callback" element={<PaymentCallback />} />
+        <Route path="/bookings/:id/reschedule" element={<RescheduleBooking />} />
+
+        {/* Account only */}
         <Route element={<ProtectedRoute />}>
-          <Route path="/book/:scheduleId" element={<BookTrip />} />
-          <Route path="/book-private/:scheduleId" element={<BookPrivateTrip />} />
-          <Route path="/bookings/:id" element={<BookingDetail />} />
           <Route path="/dashboard/bookings" element={<MyBookings />} />
-          <Route path="/bookings/:id/seats" element={<SeatSelection />} />
-          <Route path="/bookings/:id/tickets" element={<Tickets />} />
-          <Route path="/payment/callback" element={<PaymentCallback />} />
-          <Route path="/bookings/:id/reschedule" element={<RescheduleBooking />} />
           <Route path="/profile" element={<Profile />} />
         </Route>
 

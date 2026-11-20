@@ -39,7 +39,7 @@ export default function VerifyEmail() {
         setFormError(res.message || 'That code didn\u2019t work — check it and try again.');
         return;
       }
-      navigate('/login', { state: { verified: true } });
+      navigate('/login', { state: { verified: true, from: location.state?.from } });
     } catch (err) {
       setFormError(err.message);
       setErrors(err.errors || {});

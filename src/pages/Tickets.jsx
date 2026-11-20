@@ -170,7 +170,7 @@ export default function Tickets() {
   return (
     <div className="mx-auto max-w-2xl px-6 py-12 print:py-0">
       <PageHeader
-        eyebrow={`Booking ${id}`}
+        eyebrow={tickets?.[0]?.reference ? `Booking ${tickets[0].reference}` : 'Your booking'}
         title="Your tickets"
         className="print:hidden"
       />

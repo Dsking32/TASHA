@@ -40,10 +40,10 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  to={isAuthed ? '/dashboard/bookings' : '/login'}
+                  to={isAuthed ? '/dashboard/bookings' : '/manage-booking'}
                   className="transition-colors hover:text-sky"
                 >
-                  My bookings
+                  {isAuthed ? 'My bookings' : 'Manage booking'}
                 </Link>
               </li>
               <li>

@@ -161,7 +161,7 @@ export default function SearchPanel() {
         )}
 
         {/* Date + passengers */}
-        <div className="mt-4 grid gap-4 sm:grid-cols-[1fr_auto]">
+        <div className="mt-4 grid gap-4">
           <div>
             <span className={labelClass}>
               <Calendar size="1em" aria-hidden="true" /> Travel date
@@ -196,11 +196,12 @@ export default function SearchPanel() {
             </div>
           </div>
 
-          <div>
-            <span className={labelClass}>
+          {/* Own row so the stepper never gets squeezed by the date controls */}
+          <div className="flex items-center justify-between gap-4">
+            <span className={`${labelClass} mb-0`}>
               <Users size="1em" aria-hidden="true" /> Passengers
             </span>
-            <div className="flex items-center justify-between gap-1 rounded-xl bg-white p-1 shadow-sm ring-1 ring-black/5">
+            <div className="flex shrink-0 items-center gap-1 rounded-xl bg-white p-1 shadow-sm ring-1 ring-black/5">
               <button
                 type="button"
                 onClick={() => changePassengers(-1)}

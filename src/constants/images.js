@@ -11,6 +11,13 @@ export const PHOTOS = {
   hero: '1613463918637-3574cd5d34c0',
   // Toyota HiAce, rear view
   hiace: '1650807486050-a142ea418b19',
+  // Toyota Coaster buses
+  coaster: '1534011056808-50c1c6082fe7',
+  coasterAlt: '1642325017820-d081feea1969',
+  // Inside a full passenger bus
+  busInterior: '1509749837427-ac94a2553d0e',
+  // Traveller with luggage at a motor park
+  motorPark: '1746190068230-4f727e663ecb',
   // Couple in matching pink aso-ebi — group/event travel
   couple: '1589199051916-92cd36b97ffa',
   // Woman on pink backdrop holding a phone — ticket on your phone
@@ -37,3 +44,11 @@ export const PHOTOS = {
   durbar: '1668246153111-07549350eda7',
   northernAttire: '1779950656422-85b9c5253237',
 };
+
+// Photo for a schedule's vehicle, by model. Falls back to the Coaster.
+export function vehiclePhoto(vehicle) {
+  const model = `${vehicle?.make || ''} ${vehicle?.model || ''}`.toLowerCase();
+  if (model.includes('hiace')) return PHOTOS.hiace;
+  if (model.includes('coaster')) return PHOTOS.coaster;
+  return PHOTOS.coasterAlt;
+}
